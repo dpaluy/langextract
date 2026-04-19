@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.4.5", "4.0.2"]
+        experimental: [false]
+        include:
+          - ruby: "ruby-head"
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Run tests
+        run: bundle exec rake test
+
+      - name: Run lint
+        run: bundle exec rubocop
+
+      - name: Build gem
+        run: bundle exec rake build

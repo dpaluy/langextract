@@ -1,0 +1,2974 @@
+{
+  "upstream": {
+    "repo": "https://github.com/google/langextract",
+    "tag": "v1.2.1",
+    "commit": "9cd220c14ec6dbb64ba00b710bd376ffd17f1d29",
+    "collection_command": "pytest --collect-only -q tests plus explicit live/Ollama collection",
+    "note": "The v1.2.1 tag collected 404 deterministic tests and 15 live/Ollama tests in this environment; this differs from the PRD snapshot count and should be reconciled before a 1.0 parity claim."
+  },
+  "counts": {
+    "total": 419,
+    "deterministic": 404,
+    "live_api": 11,
+    "ollama_integration": 4,
+    "by_file": {
+      "tests/annotation_test.py": 29,
+      "tests/chunking_test.py": 19,
+      "tests/data_lib_test.py": 7,
+      "tests/extract_precedence_test.py": 6,
+      "tests/extract_schema_integration_test.py": 7,
+      "tests/factory_schema_test.py": 8,
+      "tests/factory_test.py": 22,
+      "tests/format_handler_test.py": 10,
+      "tests/inference_test.py": 31,
+      "tests/init_test.py": 23,
+      "tests/progress_test.py": 5,
+      "tests/prompt_validation_test.py": 15,
+      "tests/prompting_test.py": 19,
+      "tests/provider_plugin_test.py": 10,
+      "tests/provider_schema_test.py": 20,
+      "tests/registry_test.py": 13,
+      "tests/resolver_test.py": 82,
+      "tests/schema_test.py": 14,
+      "tests/test_live_api.py": 11,
+      "tests/test_ollama_integration.py": 4,
+      "tests/tokenizer_test.py": 59,
+      "tests/visualization_test.py": 5
+    }
+  },
+  "tests": [
+    {
+      "id": "tests/annotation_test.py::AnnotateDocumentsGeneratorTest::test_yields_documents_not_generators",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotateDocumentsGeneratorTest",
+      "test": "test_yields_documents_not_generators",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultiPassTest::test_multipass_extraction_empty_passes",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultiPassTest",
+      "test": "test_multipass_extraction_empty_passes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultiPassTest::test_multipass_extraction_non_overlapping",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultiPassTest",
+      "test": "test_multipass_extraction_non_overlapping",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultiPassTest::test_multipass_extraction_overlapping",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultiPassTest",
+      "test": "test_multipass_extraction_overlapping",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultiPassTest::test_multipass_extraction_single_pass",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultiPassTest",
+      "test": "test_multipass_extraction_single_pass",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultipleDocumentTest::test_annotate_documents_exceptions_same_document_id_contiguous",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultipleDocumentTest",
+      "test": "test_annotate_documents_exceptions_same_document_id_contiguous",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultipleDocumentTest::test_annotate_documents_exceptions_same_document_id_separated",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultipleDocumentTest",
+      "test": "test_annotate_documents_exceptions_same_document_id_separated",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultipleDocumentTest::test_annotate_documents_multiple_documents",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultipleDocumentTest",
+      "test": "test_annotate_documents_multiple_documents",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultipleDocumentTest::test_annotate_documents_multiple_documents_same_batch",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultipleDocumentTest",
+      "test": "test_annotate_documents_multiple_documents_same_batch",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultipleDocumentTest::test_annotate_documents_single_document",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultipleDocumentTest",
+      "test": "test_annotate_documents_single_document",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorMultipleDocumentTest::test_annotate_documents_zero_documents",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorMultipleDocumentTest",
+      "test": "test_annotate_documents_zero_documents",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorTest::test_annotate_text_multiple_chunks",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorTest",
+      "test": "test_annotate_text_multiple_chunks",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorTest::test_annotate_text_no_extractions",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorTest",
+      "test": "test_annotate_text_no_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorTest::test_annotate_text_single_chunk",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorTest",
+      "test": "test_annotate_text_single_chunk",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorTest::test_annotate_text_with_attributes_suffix",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorTest",
+      "test": "test_annotate_text_with_attributes_suffix",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::AnnotatorTest::test_annotate_text_without_index_suffix",
+      "file": "tests/annotation_test.py",
+      "class": "AnnotatorTest",
+      "test": "test_annotate_text_without_index_suffix",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::CrossChunkContextTest::test_context_window_includes_previous_chunk_text",
+      "file": "tests/annotation_test.py",
+      "class": "CrossChunkContextTest",
+      "test": "test_context_window_includes_previous_chunk_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::CrossChunkContextTest::test_context_window_per_document_isolation",
+      "file": "tests/annotation_test.py",
+      "class": "CrossChunkContextTest",
+      "test": "test_context_window_per_document_isolation",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::CrossChunkContextTest::test_no_context_included_when_disabled",
+      "file": "tests/annotation_test.py",
+      "class": "CrossChunkContextTest",
+      "test": "test_no_context_included_when_disabled",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_extractions_overlap_adjacent_intervals",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_extractions_overlap_adjacent_intervals",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_extractions_overlap_both_none_intervals",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_extractions_overlap_both_none_intervals",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_extractions_overlap_non_overlapping_intervals",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_extractions_overlap_non_overlapping_intervals",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_extractions_overlap_none_interval_first",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_extractions_overlap_none_interval_first",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_extractions_overlap_none_interval_second",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_extractions_overlap_none_interval_second",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_extractions_overlap_overlapping_intervals",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_extractions_overlap_overlapping_intervals",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_merge_non_overlapping_extractions_empty_list",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_merge_non_overlapping_extractions_empty_list",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_merge_non_overlapping_extractions_non_overlapping_passes",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_merge_non_overlapping_extractions_non_overlapping_passes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_merge_non_overlapping_extractions_overlapping_passes_first_wins",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_merge_non_overlapping_extractions_overlapping_passes_first_wins",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/annotation_test.py::MultiPassHelperFunctionsTest::test_merge_non_overlapping_extractions_single_pass",
+      "file": "tests/annotation_test.py",
+      "class": "MultiPassHelperFunctionsTest",
+      "test": "test_merge_non_overlapping_extractions_single_pass",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::BatchingTest::test_make_batches_of_textchunk_test_empty_input",
+      "file": "tests/chunking_test.py",
+      "class": "BatchingTest",
+      "test": "test_make_batches_of_textchunk_test_empty_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::BatchingTest::test_make_batches_of_textchunk_test_with_data",
+      "file": "tests/chunking_test.py",
+      "class": "BatchingTest",
+      "test": "test_make_batches_of_textchunk_test_with_data",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::ChunkIteratorTest::test_break_sentence",
+      "file": "tests/chunking_test.py",
+      "class": "ChunkIteratorTest",
+      "test": "test_break_sentence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::ChunkIteratorTest::test_chunk_unicode_text",
+      "file": "tests/chunking_test.py",
+      "class": "ChunkIteratorTest",
+      "test": "test_chunk_unicode_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::ChunkIteratorTest::test_long_token_gets_own_chunk",
+      "file": "tests/chunking_test.py",
+      "class": "ChunkIteratorTest",
+      "test": "test_long_token_gets_own_chunk",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::ChunkIteratorTest::test_multi_sentence_chunk",
+      "file": "tests/chunking_test.py",
+      "class": "ChunkIteratorTest",
+      "test": "test_multi_sentence_chunk",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::ChunkIteratorTest::test_newline_at_chunk_boundary_does_not_create_empty_interval",
+      "file": "tests/chunking_test.py",
+      "class": "ChunkIteratorTest",
+      "test": "test_newline_at_chunk_boundary_does_not_create_empty_interval",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::ChunkIteratorTest::test_newlines_is_secondary_sentence_break",
+      "file": "tests/chunking_test.py",
+      "class": "ChunkIteratorTest",
+      "test": "test_newlines_is_secondary_sentence_break",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::ChunkIteratorTest::test_sentence_with_multiple_newlines_and_right_interval",
+      "file": "tests/chunking_test.py",
+      "class": "ChunkIteratorTest",
+      "test": "test_sentence_with_multiple_newlines_and_right_interval",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::ChunkIteratorTest::test_tokenizer_propagation",
+      "file": "tests/chunking_test.py",
+      "class": "ChunkIteratorTest",
+      "test": "test_tokenizer_propagation",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::SentenceIterTest::test_basic",
+      "file": "tests/chunking_test.py",
+      "class": "SentenceIterTest",
+      "test": "test_basic",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::SentenceIterTest::test_empty",
+      "file": "tests/chunking_test.py",
+      "class": "SentenceIterTest",
+      "test": "test_empty",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::TextAdditionalContextTest::test_chunk_iterator_without_additional_context",
+      "file": "tests/chunking_test.py",
+      "class": "TextAdditionalContextTest",
+      "test": "test_chunk_iterator_without_additional_context",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::TextAdditionalContextTest::test_multiple_chunks_with_additional_context",
+      "file": "tests/chunking_test.py",
+      "class": "TextAdditionalContextTest",
+      "test": "test_multiple_chunks_with_additional_context",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::TextAdditionalContextTest::test_text_chunk_additional_context",
+      "file": "tests/chunking_test.py",
+      "class": "TextAdditionalContextTest",
+      "test": "test_text_chunk_additional_context",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::TextChunkPropertyTest::test_text_chunk_properties_no_additional_context",
+      "file": "tests/chunking_test.py",
+      "class": "TextChunkPropertyTest",
+      "test": "test_text_chunk_properties_no_additional_context",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::TextChunkPropertyTest::test_text_chunk_properties_no_document",
+      "file": "tests/chunking_test.py",
+      "class": "TextChunkPropertyTest",
+      "test": "test_text_chunk_properties_no_document",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::TextChunkPropertyTest::test_text_chunk_properties_with_document",
+      "file": "tests/chunking_test.py",
+      "class": "TextChunkPropertyTest",
+      "test": "test_text_chunk_properties_with_document",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/chunking_test.py::TextChunkTest::test_string_output",
+      "file": "tests/chunking_test.py",
+      "class": "TextChunkTest",
+      "test": "test_string_output",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/data_lib_test.py::DataLibToDictParameterizedTest::test_annotated_document_to_dict_extraction_with_attributes_and_token_interval",
+      "file": "tests/data_lib_test.py",
+      "class": "DataLibToDictParameterizedTest",
+      "test": "test_annotated_document_to_dict_extraction_with_attributes_and_token_interval",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/data_lib_test.py::DataLibToDictParameterizedTest::test_annotated_document_to_dict_multiple_extractions_with_token_interval",
+      "file": "tests/data_lib_test.py",
+      "class": "DataLibToDictParameterizedTest",
+      "test": "test_annotated_document_to_dict_multiple_extractions_with_token_interval",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/data_lib_test.py::DataLibToDictParameterizedTest::test_annotated_document_to_dict_single_extraction_no_token_interval",
+      "file": "tests/data_lib_test.py",
+      "class": "DataLibToDictParameterizedTest",
+      "test": "test_annotated_document_to_dict_single_extraction_no_token_interval",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/data_lib_test.py::DataLibToDictParameterizedTest::test_annotated_document_to_dict_with_int64",
+      "file": "tests/data_lib_test.py",
+      "class": "DataLibToDictParameterizedTest",
+      "test": "test_annotated_document_to_dict_with_int64",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/data_lib_test.py::IsUrlTest::test_invalid_urls_no_scheme",
+      "file": "tests/data_lib_test.py",
+      "class": "IsUrlTest",
+      "test": "test_invalid_urls_no_scheme",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/data_lib_test.py::IsUrlTest::test_invalid_urls_with_text",
+      "file": "tests/data_lib_test.py",
+      "class": "IsUrlTest",
+      "test": "test_invalid_urls_with_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/data_lib_test.py::IsUrlTest::test_valid_urls",
+      "file": "tests/data_lib_test.py",
+      "class": "IsUrlTest",
+      "test": "test_valid_urls",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_precedence_test.py::ExtractParameterPrecedenceTest::test_config_overrides_model_id_and_language_model_type",
+      "file": "tests/extract_precedence_test.py",
+      "class": "ExtractParameterPrecedenceTest",
+      "test": "test_config_overrides_model_id_and_language_model_type",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_precedence_test.py::ExtractParameterPrecedenceTest::test_language_model_type_only_emits_warning_and_works",
+      "file": "tests/extract_precedence_test.py",
+      "class": "ExtractParameterPrecedenceTest",
+      "test": "test_language_model_type_only_emits_warning_and_works",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_precedence_test.py::ExtractParameterPrecedenceTest::test_model_id_and_base_kwargs_override_language_model_type",
+      "file": "tests/extract_precedence_test.py",
+      "class": "ExtractParameterPrecedenceTest",
+      "test": "test_model_id_and_base_kwargs_override_language_model_type",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_precedence_test.py::ExtractParameterPrecedenceTest::test_model_overrides_all_other_parameters",
+      "file": "tests/extract_precedence_test.py",
+      "class": "ExtractParameterPrecedenceTest",
+      "test": "test_model_overrides_all_other_parameters",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_precedence_test.py::ExtractParameterPrecedenceTest::test_use_schema_constraints_warns_with_config",
+      "file": "tests/extract_precedence_test.py",
+      "class": "ExtractParameterPrecedenceTest",
+      "test": "test_use_schema_constraints_warns_with_config",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_precedence_test.py::ExtractParameterPrecedenceTest::test_use_schema_constraints_warns_with_model",
+      "file": "tests/extract_precedence_test.py",
+      "class": "ExtractParameterPrecedenceTest",
+      "test": "test_use_schema_constraints_warns_with_model",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_schema_integration_test.py::ExtractSchemaIntegrationTest::test_extract_explicit_fence_respected",
+      "file": "tests/extract_schema_integration_test.py",
+      "class": "ExtractSchemaIntegrationTest",
+      "test": "test_extract_explicit_fence_respected",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_schema_integration_test.py::ExtractSchemaIntegrationTest::test_extract_gemini_schema_deprecation_warning",
+      "file": "tests/extract_schema_integration_test.py",
+      "class": "ExtractSchemaIntegrationTest",
+      "test": "test_extract_gemini_schema_deprecation_warning",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_schema_integration_test.py::ExtractSchemaIntegrationTest::test_extract_no_schema_when_disabled",
+      "file": "tests/extract_schema_integration_test.py",
+      "class": "ExtractSchemaIntegrationTest",
+      "test": "test_extract_no_schema_when_disabled",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_schema_integration_test.py::ExtractSchemaIntegrationTest::test_extract_with_gemini_uses_schema",
+      "file": "tests/extract_schema_integration_test.py",
+      "class": "ExtractSchemaIntegrationTest",
+      "test": "test_extract_with_gemini_uses_schema",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_schema_integration_test.py::ExtractSchemaIntegrationTest::test_extract_with_ollama_uses_json_mode",
+      "file": "tests/extract_schema_integration_test.py",
+      "class": "ExtractSchemaIntegrationTest",
+      "test": "test_extract_with_ollama_uses_json_mode",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_schema_integration_test.py::ExtractSchemaIntegrationTest::test_no_validation_without_schema",
+      "file": "tests/extract_schema_integration_test.py",
+      "class": "ExtractSchemaIntegrationTest",
+      "test": "test_no_validation_without_schema",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/extract_schema_integration_test.py::ExtractSchemaIntegrationTest::test_validation_triggers_warning_for_gemini",
+      "file": "tests/extract_schema_integration_test.py",
+      "class": "ExtractSchemaIntegrationTest",
+      "test": "test_validation_triggers_warning_for_gemini",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_schema_test.py::FactorySchemaIntegrationTest::test_caller_overrides_schema_config",
+      "file": "tests/factory_schema_test.py",
+      "class": "FactorySchemaIntegrationTest",
+      "test": "test_caller_overrides_schema_config",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_schema_test.py::FactorySchemaIntegrationTest::test_explicit_fence_output_respected",
+      "file": "tests/factory_schema_test.py",
+      "class": "FactorySchemaIntegrationTest",
+      "test": "test_explicit_fence_output_respected",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_schema_test.py::FactorySchemaIntegrationTest::test_gemini_with_schema_returns_false_fence",
+      "file": "tests/factory_schema_test.py",
+      "class": "FactorySchemaIntegrationTest",
+      "test": "test_gemini_with_schema_returns_false_fence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_schema_test.py::FactorySchemaIntegrationTest::test_no_examples_no_schema",
+      "file": "tests/factory_schema_test.py",
+      "class": "FactorySchemaIntegrationTest",
+      "test": "test_no_examples_no_schema",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_schema_test.py::FactorySchemaIntegrationTest::test_no_schema_defaults_to_true_fence",
+      "file": "tests/factory_schema_test.py",
+      "class": "FactorySchemaIntegrationTest",
+      "test": "test_no_schema_defaults_to_true_fence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_schema_test.py::FactorySchemaIntegrationTest::test_ollama_with_schema_returns_false_fence",
+      "file": "tests/factory_schema_test.py",
+      "class": "FactorySchemaIntegrationTest",
+      "test": "test_ollama_with_schema_returns_false_fence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_schema_test.py::FactorySchemaIntegrationTest::test_schema_disabled_returns_true_fence",
+      "file": "tests/factory_schema_test.py",
+      "class": "FactorySchemaIntegrationTest",
+      "test": "test_schema_disabled_returns_true_fence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_schema_test.py::SchemaApplicationTest::test_apply_schema_called_when_supported",
+      "file": "tests/factory_schema_test.py",
+      "class": "SchemaApplicationTest",
+      "test": "test_apply_schema_called_when_supported",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_additional_kwargs_passed_through",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_additional_kwargs_passed_through",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_create_model_basic",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_create_model_basic",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_create_model_from_id",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_create_model_from_id",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_explicit_kwargs_override_env",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_explicit_kwargs_override_env",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_explicit_provider_loads_builtins_before_resolution",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_explicit_provider_loads_builtins_before_resolution",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_explicit_provider_loads_builtins_with_schema_constraints",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_explicit_provider_loads_builtins_with_schema_constraints",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_explicit_provider_overrides_pattern_matching",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_explicit_provider_overrides_pattern_matching",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_falls_back_to_langextract_api_key_when_provider_key_missing",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_falls_back_to_langextract_api_key_when_provider_key_missing",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_gemini_vertexai_parameters_accepted",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_gemini_vertexai_parameters_accepted",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_gemini_vertexai_with_credentials",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_gemini_vertexai_with_credentials",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_model_config_allows_dict_contents_modification",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_model_config_allows_dict_contents_modification",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_model_config_fields_are_immutable",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_model_config_fields_are_immutable",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_ollama_models_select_without_api_keys",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_ollama_models_select_without_api_keys",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_ollama_uses_base_url_from_environment",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_ollama_uses_base_url_from_environment",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_provider_specific_key_takes_priority_over_langextract_key",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_provider_specific_key_takes_priority_over_langextract_key",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_provider_without_model_id_uses_provider_default",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_provider_without_model_id_uses_provider_default",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_raises_error_when_neither_model_id_nor_provider_specified",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_raises_error_when_neither_model_id_nor_provider_specified",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_raises_error_when_no_provider_matches_model_id",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_raises_error_when_no_provider_matches_model_id",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_uses_gemini_api_key_from_environment",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_uses_gemini_api_key_from_environment",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_uses_highest_priority_provider_when_multiple_match",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_uses_highest_priority_provider_when_multiple_match",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_uses_openai_api_key_from_environment",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_uses_openai_api_key_from_environment",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/factory_test.py::FactoryTest::test_wraps_provider_initialization_error_in_inference_config_error",
+      "file": "tests/factory_test.py",
+      "class": "FactoryTest",
+      "test": "test_wraps_provider_initialization_error_in_inference_config_error",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::FormatHandlerTest::test_end_to_end_integration_with_prompt_and_resolver",
+      "file": "tests/format_handler_test.py",
+      "class": "FormatHandlerTest",
+      "test": "test_end_to_end_integration_with_prompt_and_resolver",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::FormatHandlerTest::test_format_and_parse_json_no_wrapper_no_fences",
+      "file": "tests/format_handler_test.py",
+      "class": "FormatHandlerTest",
+      "test": "test_format_and_parse_json_no_wrapper_no_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::FormatHandlerTest::test_format_and_parse_json_with_wrapper_and_fences",
+      "file": "tests/format_handler_test.py",
+      "class": "FormatHandlerTest",
+      "test": "test_format_and_parse_json_with_wrapper_and_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::FormatHandlerTest::test_format_and_parse_yaml_with_wrapper_and_fences",
+      "file": "tests/format_handler_test.py",
+      "class": "FormatHandlerTest",
+      "test": "test_format_and_parse_yaml_with_wrapper_and_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::FormatHandlerTest::test_format_parse_roundtrip_json_with_wrapper_and_fences",
+      "file": "tests/format_handler_test.py",
+      "class": "FormatHandlerTest",
+      "test": "test_format_parse_roundtrip_json_with_wrapper_and_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::FormatHandlerTest::test_format_parse_roundtrip_yaml_no_wrapper_no_fences",
+      "file": "tests/format_handler_test.py",
+      "class": "FormatHandlerTest",
+      "test": "test_format_parse_roundtrip_yaml_no_wrapper_no_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::FormatHandlerTest::test_format_parse_roundtrip_yaml_with_wrapper_no_fences",
+      "file": "tests/format_handler_test.py",
+      "class": "FormatHandlerTest",
+      "test": "test_format_parse_roundtrip_yaml_with_wrapper_no_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::NonGeminiModelParsingTest::test_deepseek_r1_real_output",
+      "file": "tests/format_handler_test.py",
+      "class": "NonGeminiModelParsingTest",
+      "test": "test_deepseek_r1_real_output",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::NonGeminiModelParsingTest::test_think_tags_stripped_before_parsing",
+      "file": "tests/format_handler_test.py",
+      "class": "NonGeminiModelParsingTest",
+      "test": "test_think_tags_stripped_before_parsing",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/format_handler_test.py::NonGeminiModelParsingTest::test_top_level_list_accepted_as_fallback",
+      "file": "tests/format_handler_test.py",
+      "class": "NonGeminiModelParsingTest",
+      "test": "test_top_level_list_accepted_as_fallback",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestBaseLanguageModel::test_merge_kwargs_with_none",
+      "file": "tests/inference_test.py",
+      "class": "TestBaseLanguageModel",
+      "test": "test_merge_kwargs_with_none",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestBaseLanguageModel::test_merge_kwargs_without_extra_kwargs",
+      "file": "tests/inference_test.py",
+      "class": "TestBaseLanguageModel",
+      "test": "test_merge_kwargs_without_extra_kwargs",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestGeminiLanguageModel::test_gemini_allowlist_filtering",
+      "file": "tests/inference_test.py",
+      "class": "TestGeminiLanguageModel",
+      "test": "test_gemini_allowlist_filtering",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestGeminiLanguageModel::test_gemini_requires_auth_config",
+      "file": "tests/inference_test.py",
+      "class": "TestGeminiLanguageModel",
+      "test": "test_gemini_requires_auth_config",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestGeminiLanguageModel::test_gemini_runtime_kwargs_filtered",
+      "file": "tests/inference_test.py",
+      "class": "TestGeminiLanguageModel",
+      "test": "test_gemini_runtime_kwargs_filtered",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestGeminiLanguageModel::test_gemini_vertexai_initialization",
+      "file": "tests/inference_test.py",
+      "class": "TestGeminiLanguageModel",
+      "test": "test_gemini_vertexai_initialization",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestGeminiLanguageModel::test_gemini_vertexai_requires_project_and_location",
+      "file": "tests/inference_test.py",
+      "class": "TestGeminiLanguageModel",
+      "test": "test_gemini_vertexai_requires_project_and_location",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestGeminiLanguageModel::test_gemini_vertexai_with_http_options",
+      "file": "tests/inference_test.py",
+      "class": "TestGeminiLanguageModel",
+      "test": "test_gemini_vertexai_with_http_options",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestGeminiLanguageModel::test_gemini_warns_when_both_auth_provided",
+      "file": "tests/inference_test.py",
+      "class": "TestGeminiLanguageModel",
+      "test": "test_gemini_warns_when_both_auth_provided",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOllamaLanguageModel::test_ollama_default_timeout",
+      "file": "tests/inference_test.py",
+      "class": "TestOllamaLanguageModel",
+      "test": "test_ollama_default_timeout",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOllamaLanguageModel::test_ollama_defaults_when_unspecified",
+      "file": "tests/inference_test.py",
+      "class": "TestOllamaLanguageModel",
+      "test": "test_ollama_defaults_when_unspecified",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOllamaLanguageModel::test_ollama_extra_kwargs_passed_to_api",
+      "file": "tests/inference_test.py",
+      "class": "TestOllamaLanguageModel",
+      "test": "test_ollama_extra_kwargs_passed_to_api",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOllamaLanguageModel::test_ollama_infer",
+      "file": "tests/inference_test.py",
+      "class": "TestOllamaLanguageModel",
+      "test": "test_ollama_infer",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOllamaLanguageModel::test_ollama_runtime_kwargs_override_stored",
+      "file": "tests/inference_test.py",
+      "class": "TestOllamaLanguageModel",
+      "test": "test_ollama_runtime_kwargs_override_stored",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOllamaLanguageModel::test_ollama_stop_and_top_p_passthrough",
+      "file": "tests/inference_test.py",
+      "class": "TestOllamaLanguageModel",
+      "test": "test_ollama_stop_and_top_p_passthrough",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOllamaLanguageModel::test_ollama_temperature_zero",
+      "file": "tests/inference_test.py",
+      "class": "TestOllamaLanguageModel",
+      "test": "test_ollama_temperature_zero",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOllamaLanguageModel::test_ollama_timeout_through_infer",
+      "file": "tests/inference_test.py",
+      "class": "TestOllamaLanguageModel",
+      "test": "test_ollama_timeout_through_infer",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_gemini_none_values_filtered",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_gemini_none_values_filtered",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_extra_kwargs_passed",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_extra_kwargs_passed",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_json_response_format",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_json_response_format",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_no_api_key_raises_error",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_no_api_key_raises_error",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_no_system_message_when_not_json_yaml",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_no_system_message_when_not_json_yaml",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_none_values_filtered",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_none_values_filtered",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_parse_output_json",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_parse_output_json",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_parse_output_yaml",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_parse_output_yaml",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_reasoning_effort_passed_directly",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_reasoning_effort_passed_directly",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_runtime_kwargs_override",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_runtime_kwargs_override",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_temperature_none_not_sent",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_temperature_none_not_sent",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModel::test_openai_temperature_zero",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModel",
+      "test": "test_openai_temperature_zero",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModelInference::test_openai_infer_with_parameters_with",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModelInference",
+      "test": "test_openai_infer_with_parameters_with",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/inference_test.py::TestOpenAILanguageModelInference::test_openai_infer_with_parameters_without",
+      "file": "tests/inference_test.py",
+      "class": "TestOpenAILanguageModelInference",
+      "test": "test_openai_infer_with_parameters_without",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::AnnotationSuppressParseErrorsTest::test_mixed_chunks_raises_when_suppression_disabled",
+      "file": "tests/init_test.py",
+      "class": "AnnotationSuppressParseErrorsTest",
+      "test": "test_mixed_chunks_raises_when_suppression_disabled",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::AnnotationSuppressParseErrorsTest::test_mixed_chunks_valid_extractions_survive",
+      "file": "tests/init_test.py",
+      "class": "AnnotationSuppressParseErrorsTest",
+      "test": "test_mixed_chunks_valid_extractions_survive",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::AnnotationSuppressParseErrorsTest::test_suppress_parse_errors_not_sent_to_infer",
+      "file": "tests/init_test.py",
+      "class": "AnnotationSuppressParseErrorsTest",
+      "test": "test_suppress_parse_errors_not_sent_to_infer",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::AnnotationSuppressParseErrorsTest::test_warning_excludes_raw_chunk_text",
+      "file": "tests/init_test.py",
+      "class": "AnnotationSuppressParseErrorsTest",
+      "test": "test_warning_excludes_raw_chunk_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_data_module_exports_via_compatibility_shim",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_data_module_exports_via_compatibility_shim",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_custom_params_reach_inference",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_custom_params_reach_inference",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_resolver_params_alignment_passthrough",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_resolver_params_alignment_passthrough",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_resolver_params_docs_path_passthrough",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_resolver_params_docs_path_passthrough",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_resolver_params_none_handling",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_resolver_params_none_handling",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_resolver_params_none_threshold",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_resolver_params_none_threshold",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_resolver_params_suppress_parse_errors",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_resolver_params_suppress_parse_errors",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_resolver_params_typo_error",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_resolver_params_typo_error",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_suppress_parse_errors_routing_caller_override_false",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_suppress_parse_errors_routing_caller_override_false",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_suppress_parse_errors_routing_default_true",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_suppress_parse_errors_routing_default_true",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_extract_with_custom_tokenizer",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_extract_with_custom_tokenizer",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_gemini_schema_deprecation_warning",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_gemini_schema_deprecation_warning",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_lang_extract_as_lx_extract",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_lang_extract_as_lx_extract",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_schema_validation_warning_issued",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_schema_validation_warning_issued",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_show_progress_controls_progress_bar_show_progress_false_debug_false",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_show_progress_controls_progress_bar_show_progress_false_debug_false",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_show_progress_controls_progress_bar_show_progress_false_debug_true",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_show_progress_controls_progress_bar_show_progress_false_debug_true",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_show_progress_controls_progress_bar_show_progress_true_debug_false",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_show_progress_controls_progress_bar_show_progress_true_debug_false",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_show_progress_controls_progress_bar_show_progress_true_debug_true",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_show_progress_controls_progress_bar_show_progress_true_debug_true",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/init_test.py::InitTest::test_tokenizer_module_exports_via_compatibility_shim",
+      "file": "tests/init_test.py",
+      "class": "InitTest",
+      "test": "test_tokenizer_module_exports_via_compatibility_shim",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/progress_test.py::ProgressTest::test_download_progress_bar",
+      "file": "tests/progress_test.py",
+      "class": "ProgressTest",
+      "test": "test_download_progress_bar",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/progress_test.py::ProgressTest::test_extraction_progress_bar",
+      "file": "tests/progress_test.py",
+      "class": "ProgressTest",
+      "test": "test_extraction_progress_bar",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/progress_test.py::ProgressTest::test_formatting_functions",
+      "file": "tests/progress_test.py",
+      "class": "ProgressTest",
+      "test": "test_formatting_functions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/progress_test.py::ProgressTest::test_model_info_extraction",
+      "file": "tests/progress_test.py",
+      "class": "ProgressTest",
+      "test": "test_model_info_extraction",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/progress_test.py::ProgressTest::test_save_load_progress_bars",
+      "file": "tests/progress_test.py",
+      "class": "ProgressTest",
+      "test": "test_save_load_progress_bars",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::ExtractIntegrationTest::test_extract_validates_in_error_mode",
+      "file": "tests/prompt_validation_test.py",
+      "class": "ExtractIntegrationTest",
+      "test": "test_extract_validates_in_error_mode",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_alignment_detection_exact_alignment",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_alignment_detection_exact_alignment",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_alignment_detection_extraction_not_found",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_alignment_detection_extraction_not_found",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_alignment_detection_fuzzy_match_lesser",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_alignment_detection_fuzzy_match_lesser",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_alignment_policies_fuzzy_disabled_rejects_non_exact",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_alignment_policies_fuzzy_disabled_rejects_non_exact",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_alignment_policies_fuzzy_enabled_accepts_close_match",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_alignment_policies_fuzzy_enabled_accepts_close_match",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_empty_examples_produces_empty_report",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_empty_examples_produces_empty_report",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_error_mode_raises_appropriately_error_mode_failed_alignment",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_error_mode_raises_appropriately_error_mode_failed_alignment",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_error_mode_raises_appropriately_error_mode_strict_fuzzy_match",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_error_mode_raises_appropriately_error_mode_strict_fuzzy_match",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_multiple_examples_preserve_indices",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_multiple_examples_preserve_indices",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_multiple_extractions_per_example_all_pass",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_multiple_extractions_per_example_all_pass",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_multiple_extractions_per_example_one_fails",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_multiple_extractions_per_example_one_fails",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_validation_does_not_mutate_input",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_validation_does_not_mutate_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_validation_levels_that_dont_raise_off_mode_with_failed",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_validation_levels_that_dont_raise_off_mode_with_failed",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompt_validation_test.py::PromptAlignmentValidationTest::test_validation_levels_that_dont_raise_warning_mode_with_failed",
+      "file": "tests/prompt_validation_test.py",
+      "class": "PromptAlignmentValidationTest",
+      "test": "test_validation_levels_that_dont_raise_warning_mode_with_failed",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::ContextAwarePromptBuilderTest::test_combines_previous_context_with_additional_context",
+      "file": "tests/prompting_test.py",
+      "class": "ContextAwarePromptBuilderTest",
+      "test": "test_combines_previous_context_with_additional_context",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::ContextAwarePromptBuilderTest::test_context_disabled_when_none",
+      "file": "tests/prompting_test.py",
+      "class": "ContextAwarePromptBuilderTest",
+      "test": "test_context_disabled_when_none",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::ContextAwarePromptBuilderTest::test_context_isolated_per_document",
+      "file": "tests/prompting_test.py",
+      "class": "ContextAwarePromptBuilderTest",
+      "test": "test_context_isolated_per_document",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::ContextAwarePromptBuilderTest::test_context_window_chars_property",
+      "file": "tests/prompting_test.py",
+      "class": "ContextAwarePromptBuilderTest",
+      "test": "test_context_window_chars_property",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::ContextAwarePromptBuilderTest::test_first_chunk_has_no_previous_context",
+      "file": "tests/prompting_test.py",
+      "class": "ContextAwarePromptBuilderTest",
+      "test": "test_first_chunk_has_no_previous_context",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::ContextAwarePromptBuilderTest::test_second_chunk_includes_previous_context",
+      "file": "tests/prompting_test.py",
+      "class": "ContextAwarePromptBuilderTest",
+      "test": "test_second_chunk_includes_previous_context",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::PromptBuilderTest::test_build_prompt_includes_additional_context",
+      "file": "tests/prompting_test.py",
+      "class": "PromptBuilderTest",
+      "test": "test_build_prompt_includes_additional_context",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::PromptBuilderTest::test_build_prompt_renders_chunk_text",
+      "file": "tests/prompting_test.py",
+      "class": "PromptBuilderTest",
+      "test": "test_build_prompt_renders_chunk_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_custom_attribute_suffix",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_custom_attribute_suffix",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_json_basic_format",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_json_basic_format",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_json_empty_attributes",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_json_empty_attributes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_json_empty_extractions",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_json_empty_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_json_simplified_no_extractions_key",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_json_simplified_no_extractions_key",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_yaml_basic_format",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_yaml_basic_format",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_yaml_empty_attributes",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_yaml_empty_attributes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_yaml_empty_extractions",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_yaml_empty_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_yaml_same_extraction_class_multiple_times",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_yaml_same_extraction_class_multiple_times",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_format_example_yaml_simplified_no_extractions_key",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_format_example_yaml_simplified_no_extractions_key",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/prompting_test.py::QAPromptGeneratorTest::test_generate_prompt",
+      "file": "tests/prompting_test.py",
+      "class": "QAPromptGeneratorTest",
+      "test": "test_generate_prompt",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginE2ETest::test_pip_install_discovery_and_cleanup",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginE2ETest",
+      "test": "test_pip_install_discovery_and_cleanup",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginE2ETest::test_plugin_with_schema_e2e",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginE2ETest",
+      "test": "test_plugin_with_schema_e2e",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginSmokeTest::test_handles_import_errors_gracefully",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginSmokeTest",
+      "test": "test_handles_import_errors_gracefully",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginSmokeTest::test_load_plugins_once_is_idempotent",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginSmokeTest",
+      "test": "test_load_plugins_once_is_idempotent",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginSmokeTest::test_non_subclass_entry_point_does_not_crash",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginSmokeTest",
+      "test": "test_non_subclass_entry_point_does_not_crash",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginSmokeTest::test_plugin_disabled_by_env_var",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginSmokeTest",
+      "test": "test_plugin_disabled_by_env_var",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginSmokeTest::test_plugin_discovery_and_usage",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginSmokeTest",
+      "test": "test_plugin_discovery_and_usage",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginSmokeTest::test_plugin_priority_override_core_provider",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginSmokeTest",
+      "test": "test_plugin_priority_override_core_provider",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginSmokeTest::test_plugin_with_custom_schema",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginSmokeTest",
+      "test": "test_plugin_with_custom_schema",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_plugin_test.py::PluginSmokeTest::test_resolve_provider_for_plugin",
+      "file": "tests/provider_plugin_test.py",
+      "class": "PluginSmokeTest",
+      "test": "test_resolve_provider_for_plugin",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::FormatModeSchemaTest::test_different_examples_same_output",
+      "file": "tests/provider_schema_test.py",
+      "class": "FormatModeSchemaTest",
+      "test": "test_different_examples_same_output",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::FormatModeSchemaTest::test_from_examples_ignores_examples",
+      "file": "tests/provider_schema_test.py",
+      "class": "FormatModeSchemaTest",
+      "test": "test_from_examples_ignores_examples",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::FormatModeSchemaTest::test_requires_raw_output_returns_true",
+      "file": "tests/provider_schema_test.py",
+      "class": "FormatModeSchemaTest",
+      "test": "test_requires_raw_output_returns_true",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::FormatModeSchemaTest::test_to_provider_config_returns_format",
+      "file": "tests/provider_schema_test.py",
+      "class": "FormatModeSchemaTest",
+      "test": "test_to_provider_config_returns_format",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::GeminiSchemaProviderIntegrationTest::test_gemini_doesnt_forward_non_api_kwargs",
+      "file": "tests/provider_schema_test.py",
+      "class": "GeminiSchemaProviderIntegrationTest",
+      "test": "test_gemini_doesnt_forward_non_api_kwargs",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::GeminiSchemaProviderIntegrationTest::test_gemini_forwards_schema_to_genai_client",
+      "file": "tests/provider_schema_test.py",
+      "class": "GeminiSchemaProviderIntegrationTest",
+      "test": "test_gemini_forwards_schema_to_genai_client",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::GeminiSchemaProviderIntegrationTest::test_gemini_rejects_yaml_with_schema",
+      "file": "tests/provider_schema_test.py",
+      "class": "GeminiSchemaProviderIntegrationTest",
+      "test": "test_gemini_rejects_yaml_with_schema",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::GeminiSchemaProviderIntegrationTest::test_gemini_requires_raw_output",
+      "file": "tests/provider_schema_test.py",
+      "class": "GeminiSchemaProviderIntegrationTest",
+      "test": "test_gemini_requires_raw_output",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::GeminiSchemaProviderIntegrationTest::test_gemini_schema_to_provider_config",
+      "file": "tests/provider_schema_test.py",
+      "class": "GeminiSchemaProviderIntegrationTest",
+      "test": "test_gemini_schema_to_provider_config",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::OllamaFormatParameterTest::test_extract_with_ollama_passes_json_format",
+      "file": "tests/provider_schema_test.py",
+      "class": "OllamaFormatParameterTest",
+      "test": "test_extract_with_ollama_passes_json_format",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::OllamaFormatParameterTest::test_ollama_default_format_is_json",
+      "file": "tests/provider_schema_test.py",
+      "class": "OllamaFormatParameterTest",
+      "test": "test_ollama_default_format_is_json",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::OllamaFormatParameterTest::test_ollama_json_format_in_request_payload",
+      "file": "tests/provider_schema_test.py",
+      "class": "OllamaFormatParameterTest",
+      "test": "test_ollama_json_format_in_request_payload",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::OllamaYAMLOverrideTest::test_json_format_keeps_fence_output_false",
+      "file": "tests/provider_schema_test.py",
+      "class": "OllamaYAMLOverrideTest",
+      "test": "test_json_format_keeps_fence_output_false",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::OllamaYAMLOverrideTest::test_ollama_yaml_format_in_request_payload",
+      "file": "tests/provider_schema_test.py",
+      "class": "OllamaYAMLOverrideTest",
+      "test": "test_ollama_yaml_format_in_request_payload",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::OllamaYAMLOverrideTest::test_yaml_override_sets_fence_output_true",
+      "file": "tests/provider_schema_test.py",
+      "class": "OllamaYAMLOverrideTest",
+      "test": "test_yaml_override_sets_fence_output_true",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::ProviderSchemaDiscoveryTest::test_gemini_returns_gemini_schema",
+      "file": "tests/provider_schema_test.py",
+      "class": "ProviderSchemaDiscoveryTest",
+      "test": "test_gemini_returns_gemini_schema",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::ProviderSchemaDiscoveryTest::test_ollama_returns_format_mode_schema",
+      "file": "tests/provider_schema_test.py",
+      "class": "ProviderSchemaDiscoveryTest",
+      "test": "test_ollama_returns_format_mode_schema",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::ProviderSchemaDiscoveryTest::test_openai_returns_none",
+      "file": "tests/provider_schema_test.py",
+      "class": "ProviderSchemaDiscoveryTest",
+      "test": "test_openai_returns_none",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::SchemaShimTest::test_constraint_types_import",
+      "file": "tests/provider_schema_test.py",
+      "class": "SchemaShimTest",
+      "test": "test_constraint_types_import",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/provider_schema_test.py::SchemaShimTest::test_provider_schema_imports",
+      "file": "tests/provider_schema_test.py",
+      "class": "SchemaShimTest",
+      "test": "test_provider_schema_imports",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_caching",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_caching",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_clear_registry",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_clear_registry",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_hf_style_model_id_patterns",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_hf_style_model_id_patterns",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_lazy_loading_defers_import",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_lazy_loading_defers_import",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_list_entries",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_list_entries",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_multiple_patterns",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_multiple_patterns",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_no_provider_registered",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_no_provider_registered",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_priority_resolution",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_priority_resolution",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_regex_pattern_objects",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_regex_pattern_objects",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_register_decorator",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_register_decorator",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_register_lazy",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_register_lazy",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_resolve_provider_by_name",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_resolve_provider_by_name",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/registry_test.py::RegistryTest::test_resolve_provider_not_found",
+      "file": "tests/registry_test.py",
+      "class": "RegistryTest",
+      "test": "test_resolve_provider_not_found",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_accept_match_lesser_disabled",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_accept_match_lesser_disabled",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_basic_alignment",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_basic_alignment",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_empty_source_text",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_empty_source_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_extraction_not_found",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_extraction_not_found",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_extraction_with_tokenizing_pipe_delimiter",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_extraction_with_tokenizing_pipe_delimiter",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_below_threshold",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_fuzzy_alignment_below_threshold",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_fails_low_ratio",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_fuzzy_alignment_fails_low_ratio",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_partial_overlap_success",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_fuzzy_alignment_partial_overlap_success",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_subset_window",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_fuzzy_alignment_subset_window",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_success",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_fuzzy_alignment_success",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_with_reordered_words",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_fuzzy_alignment_with_reordered_words",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_multiple_word_extraction_partially_matched",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_multiple_word_extraction_partially_matched",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_numerical_extractions",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_numerical_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_optimize_multiword_extractions_at_back",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_optimize_multiword_extractions_at_back",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_optimize_multiword_extractions_at_front",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_optimize_multiword_extractions_at_front",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_overlapping_extractions_different_types",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_overlapping_extractions_different_types",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_shuffled_order_of_last_two_extractions",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_shuffled_order_of_last_two_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_special_characters_in_extractions",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_special_characters_in_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_case_insensitivity",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_case_insensitivity",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_empty_extractions_list",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_empty_extractions_list",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_en_dash_unicode_handling",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_en_dash_unicode_handling",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_extraction_with_substring_of_another_not_matched",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_extraction_with_substring_of_another_not_matched",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_extractions_spanning_across_sentence_boundaries",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_extractions_spanning_across_sentence_boundaries",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_extractions_with_similar_words",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_extractions_with_similar_words",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_interleaved_extractions",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_interleaved_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_longer_extraction_spanning_multiple_words",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_longer_extraction_spanning_multiple_words",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_multiple_instances_same_extraction",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_multiple_instances_same_extraction",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_multiple_multiword_extractions_multi_group",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_multiple_multiword_extractions_multi_group",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_only_matching_end_does_not_align",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_only_matching_end_does_not_align",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_overlapping_text_extractions_with_overlapping_source",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_overlapping_text_extractions_with_overlapping_source",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_source_text_with_repeated_extractions",
+      "file": "tests/resolver_test.py",
+      "class": "AlignEntitiesTest",
+      "test": "test_extraction_alignment_test_source_text_with_repeated_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_exceptions_float_indices",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_exceptions_float_indices",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_exceptions_non_integer_indices",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_exceptions_non_integer_indices",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_all_indices_missing",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_all_indices_missing",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_attributes_suffix",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_attributes_suffix",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_duplicate_indices_unchanged",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_duplicate_indices_unchanged",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_empty_input",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_empty_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_index_without_data_key_ignored",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_index_without_data_key_ignored",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_indices_and_attributes",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_indices_and_attributes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_missing_index_key",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_missing_index_key",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_mixed_index_order",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_mixed_index_order",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_negative_indices",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_negative_indices",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_no_index_suffix",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_no_index_suffix",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_single_element_dictionaries",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_single_element_dictionaries",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_valid_input",
+      "file": "tests/resolver_test.py",
+      "class": "ExtractOrderedEntitiesTest",
+      "test": "test_extract_ordered_extractions_success_valid_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FenceFallbackTest::test_default_allows_fallback",
+      "file": "tests/resolver_test.py",
+      "class": "FenceFallbackTest",
+      "test": "test_default_allows_fallback",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FenceFallbackTest::test_fallback_preserves_content_integrity",
+      "file": "tests/resolver_test.py",
+      "class": "FenceFallbackTest",
+      "test": "test_fallback_preserves_content_integrity",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FenceFallbackTest::test_malformed_json_still_raises_error",
+      "file": "tests/resolver_test.py",
+      "class": "FenceFallbackTest",
+      "test": "test_malformed_json_still_raises_error",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FenceFallbackTest::test_parsing_scenarios_fallback_no_fences",
+      "file": "tests/resolver_test.py",
+      "class": "FenceFallbackTest",
+      "test": "test_parsing_scenarios_fallback_no_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FenceFallbackTest::test_parsing_scenarios_no_fence_expectation",
+      "file": "tests/resolver_test.py",
+      "class": "FenceFallbackTest",
+      "test": "test_parsing_scenarios_no_fence_expectation",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FenceFallbackTest::test_parsing_scenarios_with_valid_fences",
+      "file": "tests/resolver_test.py",
+      "class": "FenceFallbackTest",
+      "test": "test_parsing_scenarios_with_valid_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FenceFallbackTest::test_rejects_multiple_fenced_blocks",
+      "file": "tests/resolver_test.py",
+      "class": "FenceFallbackTest",
+      "test": "test_rejects_multiple_fenced_blocks",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FenceFallbackTest::test_strict_fences_raises_on_missing_markers",
+      "file": "tests/resolver_test.py",
+      "class": "FenceFallbackTest",
+      "test": "test_strict_fences_raises_on_missing_markers",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FlexibleSchemaTest::test_direct_list_format",
+      "file": "tests/resolver_test.py",
+      "class": "FlexibleSchemaTest",
+      "test": "test_direct_list_format",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FlexibleSchemaTest::test_flexible_with_attributes",
+      "file": "tests/resolver_test.py",
+      "class": "FlexibleSchemaTest",
+      "test": "test_flexible_with_attributes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FlexibleSchemaTest::test_lenient_mode_accepts_list",
+      "file": "tests/resolver_test.py",
+      "class": "FlexibleSchemaTest",
+      "test": "test_lenient_mode_accepts_list",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FlexibleSchemaTest::test_single_dict_as_extraction",
+      "file": "tests/resolver_test.py",
+      "class": "FlexibleSchemaTest",
+      "test": "test_single_dict_as_extraction",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::FlexibleSchemaTest::test_traditional_format_still_works",
+      "file": "tests/resolver_test.py",
+      "class": "FlexibleSchemaTest",
+      "test": "test_traditional_format_still_works",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_json_empty_string",
+      "file": "tests/resolver_test.py",
+      "class": "ParserTest",
+      "test": "test_parser_error_cases_json_empty_string",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_json_invalid_input",
+      "file": "tests/resolver_test.py",
+      "class": "ParserTest",
+      "test": "test_parser_error_cases_json_invalid_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_json_missing_markers",
+      "file": "tests/resolver_test.py",
+      "class": "ParserTest",
+      "test": "test_parser_error_cases_json_missing_markers",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_json_partial_markers",
+      "file": "tests/resolver_test.py",
+      "class": "ParserTest",
+      "test": "test_parser_error_cases_json_partial_markers",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_yaml_empty_content",
+      "file": "tests/resolver_test.py",
+      "class": "ParserTest",
+      "test": "test_parser_error_cases_yaml_empty_content",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_yaml_invalid_input",
+      "file": "tests/resolver_test.py",
+      "class": "ParserTest",
+      "test": "test_parser_error_cases_yaml_invalid_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_yaml_missing_markers",
+      "file": "tests/resolver_test.py",
+      "class": "ParserTest",
+      "test": "test_parser_error_cases_yaml_missing_markers",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_align_successful",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_align_successful",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_align_with_chunk_starting_in_middle",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_align_with_chunk_starting_in_middle",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_align_with_discontinuous_tokenized_text",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_align_with_discontinuous_tokenized_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_align_with_discontinuous_tokenized_text_but_right_chunk",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_align_with_discontinuous_tokenized_text_but_right_chunk",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_align_with_empty_annotated_extractions",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_align_with_empty_annotated_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_align_with_no_extractions_in_chunk",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_align_with_no_extractions_in_chunk",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_align_with_valid_chunk",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_align_with_valid_chunk",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_handle_integer_extraction",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_handle_integer_extraction",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_empty_yaml",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_empty_yaml",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_empty_yaml_without_suppress_parse_errors",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_empty_yaml_without_suppress_parse_errors",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_schema_error_raises_without_suppression",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_schema_error_raises_without_suppression",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_schema_error_suppressed_malformed_key_trailing_colon",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_schema_error_suppressed_malformed_key_trailing_colon",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_schema_error_suppressed_non_dict_attributes",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_schema_error_suppressed_non_dict_attributes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_valid_inputs_json_no_fence",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_valid_inputs_json_no_fence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_valid_inputs_json_with_fence",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_valid_inputs_json_with_fence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_valid_inputs_yaml_no_fence",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_valid_inputs_yaml_no_fence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/resolver_test.py::ResolverTest::test_resolve_valid_inputs_yaml_with_fence",
+      "file": "tests/resolver_test.py",
+      "class": "ResolverTest",
+      "test": "test_resolve_valid_inputs_yaml_with_fence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::BaseLanguageModelSchemaTest::test_apply_schema_stores_instance",
+      "file": "tests/schema_test.py",
+      "class": "BaseLanguageModelSchemaTest",
+      "test": "test_apply_schema_stores_instance",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::BaseLanguageModelSchemaTest::test_get_schema_class_returns_none_by_default",
+      "file": "tests/schema_test.py",
+      "class": "BaseLanguageModelSchemaTest",
+      "test": "test_get_schema_class_returns_none_by_default",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::BaseSchemaTest::test_abstract_methods_required",
+      "file": "tests/schema_test.py",
+      "class": "BaseSchemaTest",
+      "test": "test_abstract_methods_required",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::BaseSchemaTest::test_subclass_must_implement_all_methods",
+      "file": "tests/schema_test.py",
+      "class": "BaseSchemaTest",
+      "test": "test_subclass_must_implement_all_methods",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::GeminiSchemaTest::test_from_examples_constructs_expected_schema_empty_extractions",
+      "file": "tests/schema_test.py",
+      "class": "GeminiSchemaTest",
+      "test": "test_from_examples_constructs_expected_schema_empty_extractions",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::GeminiSchemaTest::test_from_examples_constructs_expected_schema_multiple_extraction_classes",
+      "file": "tests/schema_test.py",
+      "class": "GeminiSchemaTest",
+      "test": "test_from_examples_constructs_expected_schema_multiple_extraction_classes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::GeminiSchemaTest::test_from_examples_constructs_expected_schema_single_extraction",
+      "file": "tests/schema_test.py",
+      "class": "GeminiSchemaTest",
+      "test": "test_from_examples_constructs_expected_schema_single_extraction",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::GeminiSchemaTest::test_from_examples_constructs_expected_schema_single_extraction_no_attributes",
+      "file": "tests/schema_test.py",
+      "class": "GeminiSchemaTest",
+      "test": "test_from_examples_constructs_expected_schema_single_extraction_no_attributes",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::GeminiSchemaTest::test_requires_raw_output_returns_true",
+      "file": "tests/schema_test.py",
+      "class": "GeminiSchemaTest",
+      "test": "test_requires_raw_output_returns_true",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::GeminiSchemaTest::test_to_provider_config_returns_response_schema",
+      "file": "tests/schema_test.py",
+      "class": "GeminiSchemaTest",
+      "test": "test_to_provider_config_returns_response_schema",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::SchemaValidationTest::test_base_schema_no_validation",
+      "file": "tests/schema_test.py",
+      "class": "SchemaValidationTest",
+      "test": "test_base_schema_no_validation",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::SchemaValidationTest::test_gemini_validation_no_warning_with_correct_settings",
+      "file": "tests/schema_test.py",
+      "class": "SchemaValidationTest",
+      "test": "test_gemini_validation_no_warning_with_correct_settings",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::SchemaValidationTest::test_gemini_validation_warns_about_fences",
+      "file": "tests/schema_test.py",
+      "class": "SchemaValidationTest",
+      "test": "test_gemini_validation_warns_about_fences",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/schema_test.py::SchemaValidationTest::test_gemini_validation_warns_about_wrong_wrapper_key",
+      "file": "tests/schema_test.py",
+      "class": "SchemaValidationTest",
+      "test": "test_gemini_validation_warns_about_wrong_wrapper_key",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/test_live_api.py::TestCrossChunkContext::test_context_window_extracts_from_both_chunks",
+      "file": "tests/test_live_api.py",
+      "class": "TestCrossChunkContext",
+      "test": "test_context_window_extracts_from_both_chunks",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIGemini::test_batch_caching_live",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIGemini",
+      "test": "test_batch_caching_live",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIGemini::test_batch_extraction_vertex_gcs",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIGemini",
+      "test": "test_batch_extraction_vertex_gcs",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIGemini::test_explicit_provider_gemini",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIGemini",
+      "test": "test_explicit_provider_gemini",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIGemini::test_medication_extraction",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIGemini",
+      "test": "test_medication_extraction",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIGemini::test_medication_relationship_extraction",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIGemini",
+      "test": "test_medication_relationship_extraction",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIGemini::test_multilingual_medication_extraction",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIGemini",
+      "test": "test_multilingual_medication_extraction",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIOpenAI::test_explicit_provider_selection",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIOpenAI",
+      "test": "test_explicit_provider_selection",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIOpenAI::test_medication_extraction",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIOpenAI",
+      "test": "test_medication_extraction",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIOpenAI::test_medication_relationship_extraction",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIOpenAI",
+      "test": "test_medication_relationship_extraction",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_live_api.py::TestLiveAPIOpenAI::test_reasoning_effort_passthrough",
+      "file": "tests/test_live_api.py",
+      "class": "TestLiveAPIOpenAI",
+      "test": "test_reasoning_effort_passthrough",
+      "runtime": "live_api"
+    },
+    {
+      "id": "tests/test_ollama_integration.py::test_deepseek_r1_extraction",
+      "file": "tests/test_ollama_integration.py",
+      "class": null,
+      "test": "test_deepseek_r1_extraction",
+      "runtime": "ollama_integration"
+    },
+    {
+      "id": "tests/test_ollama_integration.py::test_ollama_extraction",
+      "file": "tests/test_ollama_integration.py",
+      "class": null,
+      "test": "test_ollama_extraction",
+      "runtime": "ollama_integration"
+    },
+    {
+      "id": "tests/test_ollama_integration.py::test_ollama_extraction_with_fence_fallback",
+      "file": "tests/test_ollama_integration.py",
+      "class": null,
+      "test": "test_ollama_extraction_with_fence_fallback",
+      "runtime": "ollama_integration"
+    },
+    {
+      "id": "tests/test_ollama_integration.py::test_ollama_provider_via_model_config_must_be_first_test",
+      "file": "tests/test_ollama_integration.py",
+      "class": null,
+      "test": "test_ollama_provider_via_model_config_must_be_first_test",
+      "runtime": "ollama_integration"
+    },
+    {
+      "id": "tests/tokenizer_test.py::ExceptionTest::test_invalid_token_interval_errors",
+      "file": "tests/tokenizer_test.py",
+      "class": "ExceptionTest",
+      "test": "test_invalid_token_interval_errors",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::ExceptionTest::test_sentence_range_errors",
+      "file": "tests/tokenizer_test.py",
+      "class": "ExceptionTest",
+      "test": "test_sentence_range_errors",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::NegativeTestCases::test_empty_string_edge_case",
+      "file": "tests/tokenizer_test.py",
+      "class": "NegativeTestCases",
+      "test": "test_empty_string_edge_case",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_extremely_long_grapheme_cluster",
+      "file": "tests/tokenizer_test.py",
+      "class": "NegativeTestCases",
+      "test": "test_invalid_and_edge_case_unicode_extremely_long_grapheme_cluster",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_invalid_utf8_sequence",
+      "file": "tests/tokenizer_test.py",
+      "class": "NegativeTestCases",
+      "test": "test_invalid_and_edge_case_unicode_invalid_utf8_sequence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_isolated_combining_marks",
+      "file": "tests/tokenizer_test.py",
+      "class": "NegativeTestCases",
+      "test": "test_invalid_and_edge_case_unicode_isolated_combining_marks",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_mixed_valid_invalid_unicode",
+      "file": "tests/tokenizer_test.py",
+      "class": "NegativeTestCases",
+      "test": "test_invalid_and_edge_case_unicode_mixed_valid_invalid_unicode",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_zero_width_joiners",
+      "file": "tests/tokenizer_test.py",
+      "class": "NegativeTestCases",
+      "test": "test_invalid_and_edge_case_unicode_zero_width_joiners",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::NegativeTestCases::test_whitespace_only_string",
+      "file": "tests/tokenizer_test.py",
+      "class": "NegativeTestCases",
+      "test": "test_whitespace_only_string",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_configurable_sentence_splitting",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_configurable_sentence_splitting",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_full_sentence_range_end_of_text",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_full_sentence_range_end_of_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_invalid_start_pos_out_of_range_exceeding_length",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_invalid_start_pos_out_of_range_exceeding_length",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_invalid_start_pos_out_of_range_negative_start",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_invalid_start_pos_out_of_range_negative_start",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_partial_sentence_range_abbreviation_not_boundary",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_partial_sentence_range_abbreviation_not_boundary",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_partial_sentence_range_second_line_capital_letter_terminates_sentence",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_partial_sentence_range_second_line_capital_letter_terminates_sentence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_partial_sentence_range_simple_sentence",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_partial_sentence_range_simple_sentence",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_sentence_boundary_with_quote",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_sentence_boundary_with_quote",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_sentence_splitting_permissive",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_sentence_splitting_permissive",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::SentenceRangeTest::test_unicode_sentence_boundaries",
+      "file": "tests/tokenizer_test.py",
+      "class": "SentenceRangeTest",
+      "test": "test_unicode_sentence_boundaries",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_first_token_after_newline_flag",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_first_token_after_newline_flag",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_performance_optimization_no_crash",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_performance_optimization_no_crash",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_basic_text",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_tokenize_various_inputs_basic_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_empty_string",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_tokenize_various_inputs_empty_string",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_mixed_punctuation",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_tokenize_various_inputs_mixed_punctuation",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_multi_line_input",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_tokenize_various_inputs_multi_line_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_multiple_spaces_and_numbers",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_tokenize_various_inputs_multiple_spaces_and_numbers",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_non_ascii_text",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_tokenize_various_inputs_non_ascii_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_only_symbols",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_tokenize_various_inputs_only_symbols",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokenizerTest::test_underscore_handling",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokenizerTest",
+      "test": "test_underscore_handling",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokensTextTest::test_invalid_intervals_end_index_out_of_bounds",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokensTextTest",
+      "test": "test_invalid_intervals_end_index_out_of_bounds",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokensTextTest::test_invalid_intervals_start_index_gt_end_index",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokensTextTest",
+      "test": "test_invalid_intervals_start_index_gt_end_index",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokensTextTest::test_invalid_intervals_start_index_negative",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokensTextTest",
+      "test": "test_invalid_intervals_start_index_negative",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokensTextTest::test_valid_intervals_numeric_tokens",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokensTextTest",
+      "test": "test_valid_intervals_numeric_tokens",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokensTextTest::test_valid_intervals_substring_jane_doe",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokensTextTest",
+      "test": "test_valid_intervals_substring_jane_doe",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::TokensTextTest::test_valid_intervals_substring_with_punctuation",
+      "file": "tests/tokenizer_test.py",
+      "class": "TokensTextTest",
+      "test": "test_valid_intervals_substring_with_punctuation",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_acronym_inconsistency",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_acronym_inconsistency",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_cjk_detection_regex",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_cjk_detection_regex",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_consecutive_punctuation_grouping",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_consecutive_punctuation_grouping",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_distinct_unknown_scripts_do_not_merge",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_distinct_unknown_scripts_do_not_merge",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_expanded_cjk_detection",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_expanded_cjk_detection",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_find_sentence_range_empty_input",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_find_sentence_range_empty_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_first_token_after_newline_parity",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_first_token_after_newline_parity",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_identical_unknown_scripts_merge",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_identical_unknown_scripts_merge",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_mixed_line_endings",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_mixed_line_endings",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_mixed_script_and_emoji",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_mixed_script_and_emoji",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_mixed_uncommon_scripts_no_grouping",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_mixed_uncommon_scripts_no_grouping",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_newline_simplification",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_newline_simplification",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_newline_simplification_start",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_newline_simplification_start",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_non_spaced_scripts_no_grouping",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_non_spaced_scripts_no_grouping",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_normalization_indices_match_input",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_normalization_indices_match_input",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_punctuation_merging_identical_only",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_punctuation_merging_identical_only",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_script_boundary_grouping",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_script_boundary_grouping",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_special_unicode_and_punctuation_handling_leading_trailing_underscores",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_special_unicode_and_punctuation_handling_leading_trailing_underscores",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_special_unicode_and_punctuation_handling_mixed_digit_han_same_type_grouping",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_special_unicode_and_punctuation_handling_mixed_digit_han_same_type_grouping",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_special_unicode_and_punctuation_handling_underscore_word_separator",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_special_unicode_and_punctuation_handling_underscore_word_separator",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_tokenize_various_inputs_english_text",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_tokenize_various_inputs_english_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_tokenize_various_inputs_japanese_text",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_tokenize_various_inputs_japanese_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_tokenize_various_inputs_mixed_text",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_tokenize_various_inputs_mixed_text",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_unknown_script_merging_edge_case",
+      "file": "tests/tokenizer_test.py",
+      "class": "UnicodeTokenizerTest",
+      "test": "test_unknown_script_merging_edge_case",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/visualization_test.py::VisualizationTest::test_assign_colors_basic_assignment",
+      "file": "tests/visualization_test.py",
+      "class": "VisualizationTest",
+      "test": "test_assign_colors_basic_assignment",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/visualization_test.py::VisualizationTest::test_build_highlighted_text_escapes_html_in_text_and_tooltip",
+      "file": "tests/visualization_test.py",
+      "class": "VisualizationTest",
+      "test": "test_build_highlighted_text_escapes_html_in_text_and_tooltip",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/visualization_test.py::VisualizationTest::test_build_highlighted_text_single_span_correct_html",
+      "file": "tests/visualization_test.py",
+      "class": "VisualizationTest",
+      "test": "test_build_highlighted_text_single_span_correct_html",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/visualization_test.py::VisualizationTest::test_visualize_basic_document_renders_correctly",
+      "file": "tests/visualization_test.py",
+      "class": "VisualizationTest",
+      "test": "test_visualize_basic_document_renders_correctly",
+      "runtime": "deterministic"
+    },
+    {
+      "id": "tests/visualization_test.py::VisualizationTest::test_visualize_no_extractions_renders_text_and_empty_legend",
+      "file": "tests/visualization_test.py",
+      "class": "VisualizationTest",
+      "test": "test_visualize_no_extractions_renders_text_and_empty_legend",
+      "runtime": "deterministic"
+    }
+  ]
+}

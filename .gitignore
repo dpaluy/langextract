@@ -1,0 +1,28 @@
+/.bundle/
+/_yardoc/
+/.ruby-lsp/
+/vendor/bundle
+/tmp/
+/pkg/
+*.gem
+
+/Gemfile.lock
+
+/coverage/
+/spec/reports/
+
+/.yardoc
+/doc/
+.omx/
+
+# Mac finder artifacts
+.DS_Store
+
+# Agent/runtime artifacts
+AGENTS.md
+CLAUDE.md
+.claude/
+.worktrees/
+.repoprompt/
+prompt-exports/
+reports/

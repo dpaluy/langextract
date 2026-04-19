@@ -1,0 +1,79 @@
+{
+  "tokenizer": [
+    {
+      "name": "unicode_offsets",
+      "input": "Café costs €5.",
+      "tokens": [
+        { "text": "Café", "start_pos": 0, "end_pos": 4 },
+        { "text": "costs", "start_pos": 5, "end_pos": 10 },
+        { "text": "€", "start_pos": 11, "end_pos": 12 },
+        { "text": "5", "start_pos": 12, "end_pos": 13 },
+        { "text": ".", "start_pos": 13, "end_pos": 14 }
+      ]
+    }
+  ],
+  "resolver": [
+    {
+      "name": "repeated_fuzzy_mentions",
+      "text": "Jonathon Smith met Jonathon Smith.",
+      "extractions": [
+        { "text": "Jonathan Smith" },
+        { "text": "Jonathan Smith" }
+      ],
+      "expected": [
+        { "status": "fuzzy", "start_pos": 0, "end_pos": 14 },
+        { "status": "fuzzy", "start_pos": 19, "end_pos": 33 }
+      ]
+    },
+    {
+      "name": "case_insensitive_fallback",
+      "text": "Alice met Bob.",
+      "extractions": [
+        { "text": "alice" }
+      ],
+      "expected": [
+        { "status": "exact", "start_pos": 0, "end_pos": 5 }
+      ]
+    },
+    {
+      "name": "whitespace_normalized_fuzzy",
+      "text": "New York reported results.",
+      "extractions": [
+        { "text": "New   York" }
+      ],
+      "expected": [
+        { "status": "fuzzy", "start_pos": 0, "end_pos": 8 }
+      ]
+    },
+    {
+      "name": "unicode_combining_mark_fuzzy",
+      "text": "Café reported results.",
+      "extractions": [
+        { "text": "Café" }
+      ],
+      "expected": [
+        { "status": "fuzzy", "start_pos": 0, "end_pos": 5 }
+      ]
+    },
+    {
+      "name": "ungrounded_suppression",
+      "text": "Alice met Bob.",
+      "extractions": [
+        { "text": "Charlie" }
+      ],
+      "expected": [
+        { "status": "ungrounded", "start_pos": null, "end_pos": null }
+      ]
+    }
+  ],
+  "format_handler": [
+    {
+      "name": "fenced_json_wrapper",
+      "format": "auto",
+      "output": "```json\n{\"extractions\":[{\"text\":\"Alice\",\"class\":\"person\"}]}\n```",
+      "expected": [
+        { "text": "Alice", "extraction_class": "person" }
+      ]
+    }
+  ]
+}
