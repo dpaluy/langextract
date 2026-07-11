@@ -1,37 +1,510 @@
 {
-  "tokenizer": [
-    {
-      "name": "unicode_offsets",
-      "input": "Café costs €5.",
-      "tokens": [
-        {
-          "text": "Café",
-          "start_pos": 0,
-          "end_pos": 4
-        },
-        {
-          "text": "costs",
-          "start_pos": 5,
-          "end_pos": 10
-        },
-        {
-          "text": "€",
-          "start_pos": 11,
-          "end_pos": 12
-        },
-        {
-          "text": "5",
-          "start_pos": 12,
-          "end_pos": 13
-        },
-        {
-          "text": ".",
-          "start_pos": 13,
-          "end_pos": 14
-        }
-      ]
-    }
-  ],
+  "tokenizer_parity": {
+    "upstream": {
+      "repo": "https://github.com/google/langextract",
+      "tag": "v1.2.1",
+      "commit": "9cd220c14ec6dbb64ba00b710bd376ffd17f1d29",
+      "source": "tests/tokenizer_test.py"
+    },
+    "cases": [
+      {
+        "upstream_id": "tests/tokenizer_test.py::NegativeTestCases::test_empty_string_edge_case",
+        "scenarios": [
+          {
+            "name": "empty_string",
+            "input": "",
+            "tokens": []
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_extremely_long_grapheme_cluster",
+        "scenarios": [
+          {
+            "name": "extremely_long_grapheme_cluster",
+            "input": "é́́́́́́́́́",
+            "tokens": [
+              {
+                "text": "é́́́́́́́́́",
+                "start_pos": 0,
+                "end_pos": 11
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_invalid_utf8_sequence",
+        "scenarios": [
+          {
+            "name": "invalid_utf8_sequence",
+            "input": "Invalid � sequence",
+            "tokens": [
+              {
+                "text": "Invalid",
+                "start_pos": 0,
+                "end_pos": 7
+              },
+              {
+                "text": "�",
+                "start_pos": 8,
+                "end_pos": 9
+              },
+              {
+                "text": "sequence",
+                "start_pos": 10,
+                "end_pos": 18
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::NegativeTestCases::test_whitespace_only_string",
+        "scenarios": [
+          {
+            "name": "spaces",
+            "input": "   ",
+            "tokens": []
+          },
+          {
+            "name": "tabs",
+            "input": "\t\t",
+            "tokens": []
+          },
+          {
+            "name": "newlines",
+            "input": "\n\n",
+            "tokens": []
+          },
+          {
+            "name": "mixed_whitespace",
+            "input": " \t\n\r ",
+            "tokens": []
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_performance_optimization_no_crash",
+        "scenarios": [
+          {
+            "name": "empty",
+            "input": "",
+            "tokens": []
+          },
+          {
+            "name": "newline",
+            "input": "\n",
+            "tokens": []
+          },
+          {
+            "name": "line_break",
+            "input": "A\nB",
+            "tokens": [
+              {
+                "text": "A",
+                "start_pos": 0,
+                "end_pos": 1
+              },
+              {
+                "text": "B",
+                "start_pos": 2,
+                "end_pos": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_basic_text",
+        "scenarios": [
+          {
+            "name": "basic_text",
+            "input": "Hello, world!",
+            "tokens": [
+              {
+                "text": "Hello",
+                "start_pos": 0,
+                "end_pos": 5
+              },
+              {
+                "text": ",",
+                "start_pos": 5,
+                "end_pos": 6
+              },
+              {
+                "text": "world",
+                "start_pos": 7,
+                "end_pos": 12
+              },
+              {
+                "text": "!",
+                "start_pos": 12,
+                "end_pos": 13
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_empty_string",
+        "scenarios": [
+          {
+            "name": "empty_string",
+            "input": "",
+            "tokens": []
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_mixed_punctuation",
+        "scenarios": [
+          {
+            "name": "mixed_punctuation",
+            "input": "?!",
+            "tokens": [
+              {
+                "text": "?",
+                "start_pos": 0,
+                "end_pos": 1
+              },
+              {
+                "text": "!",
+                "start_pos": 1,
+                "end_pos": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_multiple_spaces_and_numbers",
+        "scenarios": [
+          {
+            "name": "multiple_spaces_and_numbers",
+            "input": "Age:   25\nWeight=70kg.",
+            "tokens": [
+              {
+                "text": "Age",
+                "start_pos": 0,
+                "end_pos": 3
+              },
+              {
+                "text": ":",
+                "start_pos": 3,
+                "end_pos": 4
+              },
+              {
+                "text": "25",
+                "start_pos": 7,
+                "end_pos": 9
+              },
+              {
+                "text": "Weight",
+                "start_pos": 10,
+                "end_pos": 16
+              },
+              {
+                "text": "=",
+                "start_pos": 16,
+                "end_pos": 17
+              },
+              {
+                "text": "70",
+                "start_pos": 17,
+                "end_pos": 19
+              },
+              {
+                "text": "kg",
+                "start_pos": 19,
+                "end_pos": 21
+              },
+              {
+                "text": ".",
+                "start_pos": 21,
+                "end_pos": 22
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_non_ascii_text",
+        "scenarios": [
+          {
+            "name": "non_ascii_text",
+            "input": "café",
+            "tokens": [
+              {
+                "text": "café",
+                "start_pos": 0,
+                "end_pos": 4
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_acronym_inconsistency",
+        "scenarios": [
+          {
+            "name": "acronym",
+            "input": "A/B",
+            "tokens": [
+              {
+                "text": "A",
+                "start_pos": 0,
+                "end_pos": 1
+              },
+              {
+                "text": "/",
+                "start_pos": 1,
+                "end_pos": 2
+              },
+              {
+                "text": "B",
+                "start_pos": 2,
+                "end_pos": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_normalization_indices_match_input",
+        "scenarios": [
+          {
+            "name": "nfd_offsets_preserve_input",
+            "input": "é",
+            "tokens": [
+              {
+                "text": "é",
+                "start_pos": 0,
+                "end_pos": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_tokenize_various_inputs_english_text",
+        "scenarios": [
+          {
+            "name": "english_text",
+            "input": "Hello, world!",
+            "tokens": [
+              {
+                "text": "Hello",
+                "start_pos": 0,
+                "end_pos": 5
+              },
+              {
+                "text": ",",
+                "start_pos": 5,
+                "end_pos": 6
+              },
+              {
+                "text": "world",
+                "start_pos": 7,
+                "end_pos": 12
+              },
+              {
+                "text": "!",
+                "start_pos": 12,
+                "end_pos": 13
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "exclusions": [
+      {
+        "upstream_id": "tests/tokenizer_test.py::ExceptionTest::test_invalid_token_interval_errors",
+        "reason": "Ruby has no tokens_text or token-interval error API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::ExceptionTest::test_sentence_range_errors",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_isolated_combining_marks",
+        "reason": "Ruby emits each isolated combining mark separately; upstream groups them."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_mixed_valid_invalid_unicode",
+        "reason": "Ruby groups adjacent Han characters; upstream emits one token per character."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::NegativeTestCases::test_invalid_and_edge_case_unicode_zero_width_joiners",
+        "reason": "Ruby emits code points rather than a joined emoji grapheme."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_configurable_sentence_splitting",
+        "reason": "Ruby has no sentence-range API or configurable abbreviations."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_full_sentence_range_end_of_text",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_invalid_start_pos_out_of_range_exceeding_length",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_invalid_start_pos_out_of_range_negative_start",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_partial_sentence_range_abbreviation_not_boundary",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_partial_sentence_range_second_line_capital_letter_terminates_sentence",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_partial_sentence_range_simple_sentence",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_sentence_boundary_with_quote",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_sentence_splitting_permissive",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::SentenceRangeTest::test_unicode_sentence_boundaries",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_first_token_after_newline_flag",
+        "reason": "Ruby Token exposes no first_token_after_newline flag."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_multi_line_input",
+        "reason": "Ruby keeps letters and trailing digits together; upstream splits them by token type."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_tokenize_various_inputs_only_symbols",
+        "reason": "Upstream expects only the first symbol run while Ruby tokenizes every non-whitespace symbol."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokenizerTest::test_underscore_handling",
+        "reason": "Ruby permits underscores inside a letter-led token; upstream separates underscores."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokensTextTest::test_invalid_intervals_end_index_out_of_bounds",
+        "reason": "Ruby has no tokens_text API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokensTextTest::test_invalid_intervals_start_index_gt_end_index",
+        "reason": "Ruby has no tokens_text API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokensTextTest::test_invalid_intervals_start_index_negative",
+        "reason": "Ruby has no tokens_text API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokensTextTest::test_valid_intervals_numeric_tokens",
+        "reason": "Ruby has no tokens_text API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokensTextTest::test_valid_intervals_substring_jane_doe",
+        "reason": "Ruby has no tokens_text API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::TokensTextTest::test_valid_intervals_substring_with_punctuation",
+        "reason": "Ruby has no tokens_text API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_cjk_detection_regex",
+        "reason": "Ruby groups adjacent Han characters; upstream fragments them."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_consecutive_punctuation_grouping",
+        "reason": "Ruby emits each punctuation code point; upstream groups repeated punctuation."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_distinct_unknown_scripts_do_not_merge",
+        "reason": "Ruby groups adjacent letter scripts; upstream separates unknown scripts."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_expanded_cjk_detection",
+        "reason": "Ruby groups adjacent Han characters; upstream fragments them."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_find_sentence_range_empty_input",
+        "reason": "Ruby has no sentence-range API."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_first_token_after_newline_parity",
+        "reason": "Ruby Token exposes no first_token_after_newline flag."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_identical_unknown_scripts_merge",
+        "reason": "Ruby groups adjacent letter scripts; upstream fragments unknown scripts."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_mixed_line_endings",
+        "reason": "Ruby Token exposes no first_token_after_newline flag."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_mixed_script_and_emoji",
+        "reason": "Ruby splits emoji modifiers and groups adjacent Han digits; upstream does neither."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_mixed_uncommon_scripts_no_grouping",
+        "reason": "Ruby groups adjacent letter scripts; upstream fragments unknown scripts."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_newline_simplification",
+        "reason": "Ruby Token exposes no first_token_after_newline flag."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_newline_simplification_start",
+        "reason": "Ruby Token exposes no first_token_after_newline flag."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_non_spaced_scripts_no_grouping",
+        "reason": "Ruby groups Thai letters; upstream fragments them."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_punctuation_merging_identical_only",
+        "reason": "Ruby emits each repeated punctuation code point; upstream groups identical punctuation."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_script_boundary_grouping",
+        "reason": "Ruby groups adjacent scripts; upstream splits script boundaries."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_special_unicode_and_punctuation_handling_leading_trailing_underscores",
+        "reason": "Ruby permits underscores inside a letter-led token; upstream separates underscores."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_special_unicode_and_punctuation_handling_mixed_digit_han_same_type_grouping",
+        "reason": "Ruby groups adjacent Han characters; upstream fragments them."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_special_unicode_and_punctuation_handling_underscore_word_separator",
+        "reason": "Ruby permits underscores inside a letter-led token; upstream separates underscores."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_tokenize_various_inputs_japanese_text",
+        "reason": "Ruby groups adjacent Japanese letters; upstream fragments them."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_tokenize_various_inputs_mixed_text",
+        "reason": "Ruby groups adjacent Han characters; upstream fragments them."
+      },
+      {
+        "upstream_id": "tests/tokenizer_test.py::UnicodeTokenizerTest::test_unknown_script_merging_edge_case",
+        "reason": "Ruby groups adjacent letter scripts; upstream fragments unknown scripts."
+      }
+    ]
+  },
   "resolver": [
     {
       "name": "repeated_fuzzy_mentions",

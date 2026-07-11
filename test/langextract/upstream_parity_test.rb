@@ -9,22 +9,33 @@ class UpstreamParityTest < LangExtractTest
     @fixtures = JSON.parse(File.read(path, encoding: "UTF-8"))
   end
 
-  def test_matches_tokenizer_offset_fixtures
-    @fixtures.fetch("tokenizer").each do |fixture|
-      tokens = LangExtract::Core::UnicodeTokenizer.new.tokenize(fixture.fetch("input"))
-      expected = fixture.fetch("tokens").map.with_index do |token, index|
-        {
-          "text" => token.fetch("text"),
-          "char_interval" => {
-            "start_pos" => token.fetch("start_pos"),
-            "end_pos" => token.fetch("end_pos")
-          },
-          "index" => index
-        }
-      end
+  def test_executes_each_mapped_upstream_v1_2_1_tokenizer_case
+    @fixtures.fetch("tokenizer_parity").fetch("cases").each do |fixture|
+      fixture.fetch("scenarios").each do |scenario|
+        actual = LangExtract::Core::UnicodeTokenizer.new.tokenize(scenario.fetch("input")).map(&:to_h)
+        expected = scenario.fetch("tokens").map.with_index do |token, index|
+          {
+            "text" => token.fetch("text"),
+            "char_interval" => {
+              "start_pos" => token.fetch("start_pos"),
+              "end_pos" => token.fetch("end_pos")
+            },
+            "index" => index
+          }
+        end
 
-      assert_equal expected, tokens.map(&:to_h), fixture.fetch("name")
+        assert_equal expected, actual, "#{fixture.fetch('upstream_id')}: #{scenario.fetch('name')}"
+      end
     end
+  end
+
+  def test_maps_every_upstream_tokenizer_node_to_executable_coverage_or_exclusion
+    tokenizer = @fixtures.fetch("tokenizer_parity")
+
+    assert_tokenizer_provenance(tokenizer)
+    assert_equal tokenizer_manifest_ids.sort, tokenizer_coverage_ids(tokenizer).sort
+    assert_equal 59, tokenizer_coverage_ids(tokenizer).length
+    assert tokenizer_exclusion_reasons_present?(tokenizer)
   end
 
   def test_matches_resolver_alignment_fixtures
@@ -96,5 +107,33 @@ class UpstreamParityTest < LangExtractTest
     manifest.fetch("tests").filter_map do |test|
       test.fetch("id") if test.fetch("file") == "tests/resolver_test.py"
     end
+  end
+  def tokenizer_manifest_ids
+    manifest.fetch("tests").filter_map do |test|
+      test.fetch("id") if test.fetch("file") == "tests/tokenizer_test.py"
+    end
+  end
+
+  def manifest
+    path = File.expand_path("../fixtures/upstream/v1_2_1_pytest_manifest.json", __dir__)
+    JSON.parse(File.read(path, encoding: "UTF-8"))
+  end
+
+  def assert_tokenizer_provenance(tokenizer)
+    assert_equal "v1.2.1", tokenizer.dig("upstream", "tag")
+    assert_equal "9cd220c14ec6dbb64ba00b710bd376ffd17f1d29", tokenizer.dig("upstream", "commit")
+  end
+
+  def tokenizer_coverage_ids(tokenizer)
+    cases = tokenizer.fetch("cases")
+    exclusions = tokenizer.fetch("exclusions")
+    ids = (cases + exclusions).map { |fixture| fixture.fetch("upstream_id") }
+
+    assert_equal ids.length, ids.uniq.length
+    ids
+  end
+
+  def tokenizer_exclusion_reasons_present?(tokenizer)
+    tokenizer.fetch("exclusions").all? { |fixture| fixture.fetch("reason").length.positive? }
   end
 end
