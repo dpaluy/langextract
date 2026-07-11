@@ -18,6 +18,27 @@ Use it when a Ruby or Rails app needs structured LLM output that can be traced b
 - **Format handling** — JSON and YAML output parsing with strict and lenient modes
 - **Provider-agnostic** — pluggable LLM providers via [RubyLLM](https://github.com/crmne/ruby_llm)
 
+## Why not just use RubyLLM directly?
+
+RubyLLM is a provider adapter: it sends a prompt to an LLM and hands you back text. LangExtract is an extraction pipeline that uses RubyLLM as one interchangeable layer at the bottom (`providers/`). The resolver and the rest of the core know nothing about providers.
+
+Reach for RubyLLM directly when you want an answer from a model: summarize, answer a question, classify into buckets. You do not need LangExtract's grounding machinery for those.
+
+Reach for LangExtract when you need structured spans provably tied to your source text. Used directly, RubyLLM leaves you to build everything below yourself:
+
+| Concern | RubyLLM directly | LangExtract gem |
+|---|---|---|
+| **Source grounding** | The model says "Acme Corp appears" but not *where*, and may paraphrase | Exact + fuzzy alignment maps every extraction to precise char/token offsets in the source |
+| **Long input** | You chunk manually and hope offsets survive | Sentence-aware chunking with `max_char_buffer`, offsets preserved across chunks |
+| **Output parsing** | You parse JSON/YAML, fenced blocks, and malformed output yourself | `format_handler` with strict/lenient modes and fenced-output extraction |
+| **Prompting** | You write and maintain the prompt | Prompt builder with few-shot `ExampleData` and context-window handling |
+| **Hallucination control** | The model can invent text that isn't in the source | Alignment flags extractions that don't ground to real spans |
+| **Overlaps / dedup** | Your problem | Resolver handles overlapping and duplicate spans |
+| **Visualization** | None | Self-contained HTML highlighting extractions in the source |
+| **Persistence** | None | Lossless JSONL round-trip (`IO.save` / `IO.load`) |
+
+In short: RubyLLM gets you an answer from a model; LangExtract gets you structured spans tied to your source. RubyLLM is a dependency the gem deliberately keeps swappable, not the feature.
+
 ## Requirements
 
 - Ruby >= 4.0.5
