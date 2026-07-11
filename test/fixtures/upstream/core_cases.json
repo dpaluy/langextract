@@ -4,11 +4,31 @@
       "name": "unicode_offsets",
       "input": "Café costs €5.",
       "tokens": [
-        { "text": "Café", "start_pos": 0, "end_pos": 4 },
-        { "text": "costs", "start_pos": 5, "end_pos": 10 },
-        { "text": "€", "start_pos": 11, "end_pos": 12 },
-        { "text": "5", "start_pos": 12, "end_pos": 13 },
-        { "text": ".", "start_pos": 13, "end_pos": 14 }
+        {
+          "text": "Café",
+          "start_pos": 0,
+          "end_pos": 4
+        },
+        {
+          "text": "costs",
+          "start_pos": 5,
+          "end_pos": 10
+        },
+        {
+          "text": "€",
+          "start_pos": 11,
+          "end_pos": 12
+        },
+        {
+          "text": "5",
+          "start_pos": 12,
+          "end_pos": 13
+        },
+        {
+          "text": ".",
+          "start_pos": 13,
+          "end_pos": 14
+        }
       ]
     }
   ],
@@ -17,52 +37,88 @@
       "name": "repeated_fuzzy_mentions",
       "text": "Jonathon Smith met Jonathon Smith.",
       "extractions": [
-        { "text": "Jonathan Smith" },
-        { "text": "Jonathan Smith" }
+        {
+          "text": "Jonathan Smith"
+        },
+        {
+          "text": "Jonathan Smith"
+        }
       ],
       "expected": [
-        { "status": "fuzzy", "start_pos": 0, "end_pos": 14 },
-        { "status": "fuzzy", "start_pos": 19, "end_pos": 33 }
+        {
+          "status": "fuzzy",
+          "start_pos": 0,
+          "end_pos": 14
+        },
+        {
+          "status": "fuzzy",
+          "start_pos": 19,
+          "end_pos": 33
+        }
       ]
     },
     {
       "name": "case_insensitive_fallback",
       "text": "Alice met Bob.",
       "extractions": [
-        { "text": "alice" }
+        {
+          "text": "alice"
+        }
       ],
       "expected": [
-        { "status": "exact", "start_pos": 0, "end_pos": 5 }
+        {
+          "status": "exact",
+          "start_pos": 0,
+          "end_pos": 5
+        }
       ]
     },
     {
       "name": "whitespace_normalized_fuzzy",
       "text": "New York reported results.",
       "extractions": [
-        { "text": "New   York" }
+        {
+          "text": "New   York"
+        }
       ],
       "expected": [
-        { "status": "fuzzy", "start_pos": 0, "end_pos": 8 }
+        {
+          "status": "fuzzy",
+          "start_pos": 0,
+          "end_pos": 8
+        }
       ]
     },
     {
       "name": "unicode_combining_mark_fuzzy",
       "text": "Café reported results.",
       "extractions": [
-        { "text": "Café" }
+        {
+          "text": "Café"
+        }
       ],
       "expected": [
-        { "status": "fuzzy", "start_pos": 0, "end_pos": 5 }
+        {
+          "status": "fuzzy",
+          "start_pos": 0,
+          "end_pos": 5
+        }
       ]
     },
     {
       "name": "ungrounded_suppression",
       "text": "Alice met Bob.",
       "extractions": [
-        { "text": "Charlie" }
+        {
+          "text": "Charlie"
+        }
       ],
       "expected": [
-        { "status": "ungrounded", "start_pos": null, "end_pos": null }
+        {
+          "status": "ungrounded",
+          "start_pos": null,
+          "end_pos": null
+        }
       ]
     }
   ],
@@ -72,8 +128,625 @@
       "format": "auto",
       "output": "```json\n{\"extractions\":[{\"text\":\"Alice\",\"class\":\"person\"}]}\n```",
       "expected": [
-        { "text": "Alice", "extraction_class": "person" }
+        {
+          "text": "Alice",
+          "extraction_class": "person"
+        }
       ]
     }
-  ]
+  ],
+  "resolver_parity": {
+    "provenance": {
+      "repo": "https://github.com/google/langextract",
+      "tag": "v1.2.1",
+      "commit": "9cd220c14ec6dbb64ba00b710bd376ffd17f1d29",
+      "source_file": "tests/resolver_test.py",
+      "node_ids": "Pinned individually in cases and unsupported_cases below."
+    },
+    "cases": [
+      {
+        "name": "upstream_basic_alignment",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_basic_alignment"
+        ],
+        "text": "Patient is prescribed Naprosyn and prednisone for treatment.",
+        "extractions": [
+          {
+            "text": "Naprosyn"
+          },
+          {
+            "text": "prednisone"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 22,
+            "end_pos": 30
+          },
+          {
+            "status": "exact",
+            "start_pos": 35,
+            "end_pos": 45
+          }
+        ]
+      },
+      {
+        "name": "upstream_en_dash_unicode_handling",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_en_dash_unicode_handling"
+        ],
+        "text": "Separated–by–en–dashes.",
+        "extractions": [
+          {
+            "text": "Separated"
+          },
+          {
+            "text": "by"
+          },
+          {
+            "text": "en–dashes"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 0,
+            "end_pos": 9
+          },
+          {
+            "status": "exact",
+            "start_pos": 10,
+            "end_pos": 12
+          },
+          {
+            "status": "exact",
+            "start_pos": 13,
+            "end_pos": 22
+          }
+        ]
+      },
+      {
+        "name": "upstream_special_characters_in_extractions",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_special_characters_in_extractions"
+        ],
+        "text": "Patient is prescribed Napro-syn.",
+        "extractions": [
+          {
+            "text": "Napro-syn"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 22,
+            "end_pos": 31
+          }
+        ]
+      },
+      {
+        "name": "upstream_empty_extractions_list",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_empty_extractions_list"
+        ],
+        "text": "Patient is prescribed Naprosyn and prednisone for treatment.",
+        "extractions": [],
+        "expected": []
+      },
+      {
+        "name": "upstream_source_text_with_repeated_extractions",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_source_text_with_repeated_extractions"
+        ],
+        "text": "Patient is prescribed Naprosyn and Naprosyn.",
+        "extractions": [
+          {
+            "text": "Naprosyn"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 22,
+            "end_pos": 30
+          }
+        ]
+      },
+      {
+        "name": "upstream_multiple_instances_same_extraction",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_multiple_instances_same_extraction"
+        ],
+        "text": "Naprosyn, prednisone, and again Naprosyn are prescribed.",
+        "extractions": [
+          {
+            "text": "Naprosyn"
+          },
+          {
+            "text": "prednisone"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 0,
+            "end_pos": 8
+          },
+          {
+            "status": "exact",
+            "start_pos": 10,
+            "end_pos": 20
+          }
+        ]
+      },
+      {
+        "name": "upstream_longer_extraction_spanning_multiple_words",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_longer_extraction_spanning_multiple_words"
+        ],
+        "text": "Patient diagnosed with rheumatoid arthritis.",
+        "extractions": [
+          {
+            "text": "rheumatoid arthritis"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 23,
+            "end_pos": 43
+          }
+        ]
+      },
+      {
+        "name": "upstream_case_insensitivity",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_case_insensitivity"
+        ],
+        "text": "patient is prescribed naprosyn and prednisone for treatment.",
+        "extractions": [
+          {
+            "text": "naprosyn"
+          },
+          {
+            "text": "PREDNISONE"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 22,
+            "end_pos": 30
+          },
+          {
+            "status": "exact",
+            "start_pos": 35,
+            "end_pos": 45
+          }
+        ]
+      },
+      {
+        "name": "upstream_numerical_extractions",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_numerical_extractions"
+        ],
+        "text": "Patient was given Ibuprofen 600mg twice daily.",
+        "extractions": [
+          {
+            "text": "Ibuprofen 600mg"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 18,
+            "end_pos": 33
+          }
+        ]
+      },
+      {
+        "name": "upstream_extractions_spanning_sentence_boundaries",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_extractions_spanning_across_sentence_boundaries"
+        ],
+        "text": "Take Ibuprofen. Always take with food.",
+        "extractions": [
+          {
+            "text": "Ibuprofen"
+          },
+          {
+            "text": "take with food"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 5,
+            "end_pos": 14
+          },
+          {
+            "status": "exact",
+            "start_pos": 23,
+            "end_pos": 37
+          }
+        ]
+      },
+      {
+        "name": "upstream_multiple_multiword_extractions",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_multiple_multiword_extractions_multi_group"
+        ],
+        "text": "Pt was prescribed Naprosyn as needed for pain and prednisone for one month.",
+        "extractions": [
+          {
+            "text": "Naprosyn"
+          },
+          {
+            "text": "as needed"
+          },
+          {
+            "text": "pain"
+          },
+          {
+            "text": "prednisone"
+          },
+          {
+            "text": "for one month"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 18,
+            "end_pos": 26
+          },
+          {
+            "status": "exact",
+            "start_pos": 27,
+            "end_pos": 36
+          },
+          {
+            "status": "exact",
+            "start_pos": 41,
+            "end_pos": 45
+          },
+          {
+            "status": "exact",
+            "start_pos": 50,
+            "end_pos": 60
+          },
+          {
+            "status": "exact",
+            "start_pos": 61,
+            "end_pos": 74
+          }
+        ]
+      },
+      {
+        "name": "upstream_pipe_delimiter",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_extraction_with_tokenizing_pipe_delimiter"
+        ],
+        "text": "Patient is prescribed Napro | syn and prednisone.",
+        "extractions": [
+          {
+            "text": "Napro | syn"
+          },
+          {
+            "text": "prednisone"
+          }
+        ],
+        "expected": [
+          {
+            "status": "exact",
+            "start_pos": 22,
+            "end_pos": 33
+          },
+          {
+            "status": "exact",
+            "start_pos": 38,
+            "end_pos": 48
+          }
+        ]
+      },
+      {
+        "name": "upstream_fuzzy_accept_match_lesser_disabled",
+        "upstream_node_ids": [
+          "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_accept_match_lesser_disabled"
+        ],
+        "text": "Patient has heart problems today.",
+        "extractions": [
+          {
+            "text": "patient heart problems today"
+          }
+        ],
+        "expected": [
+          {
+            "status": "fuzzy",
+            "start_pos": 0,
+            "end_pos": 32
+          }
+        ]
+      }
+    ],
+    "unsupported_cases": [
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_empty_source_text",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_extraction_not_found",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_below_threshold",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_fails_low_ratio",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_partial_overlap_success",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_subset_window",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_success",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_fuzzy_alignment_with_reordered_words",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_multiple_word_extraction_partially_matched",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_optimize_multiword_extractions_at_back",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_optimize_multiword_extractions_at_front",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_overlapping_extractions_different_types",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_shuffled_order_of_last_two_extractions",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_extraction_with_substring_of_another_not_matched",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_extractions_with_similar_words",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_interleaved_extractions",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_only_matching_end_does_not_align",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::AlignEntitiesTest::test_extraction_alignment_test_overlapping_text_extractions_with_overlapping_source",
+        "reason": "Upstream WordAligner group allocation, token-boundary, MATCH_LESSER, or nil-status semantics differ from Ruby Resolver alignment."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_exceptions_float_indices",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_exceptions_non_integer_indices",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_all_indices_missing",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_attributes_suffix",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_duplicate_indices_unchanged",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_empty_input",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_index_without_data_key_ignored",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_indices_and_attributes",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_missing_index_key",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_mixed_index_order",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_negative_indices",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_no_index_suffix",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_single_element_dictionaries",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ExtractOrderedEntitiesTest::test_extract_ordered_extractions_success_valid_input",
+        "reason": "Upstream index-suffix extraction ordering is parser behavior; Ruby Resolver receives normalized extraction hashes."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FenceFallbackTest::test_default_allows_fallback",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FenceFallbackTest::test_fallback_preserves_content_integrity",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FenceFallbackTest::test_malformed_json_still_raises_error",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FenceFallbackTest::test_parsing_scenarios_fallback_no_fences",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FenceFallbackTest::test_parsing_scenarios_no_fence_expectation",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FenceFallbackTest::test_parsing_scenarios_with_valid_fences",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FenceFallbackTest::test_rejects_multiple_fenced_blocks",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FenceFallbackTest::test_strict_fences_raises_on_missing_markers",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FlexibleSchemaTest::test_direct_list_format",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FlexibleSchemaTest::test_flexible_with_attributes",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FlexibleSchemaTest::test_lenient_mode_accepts_list",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FlexibleSchemaTest::test_single_dict_as_extraction",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::FlexibleSchemaTest::test_traditional_format_still_works",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_json_empty_string",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_json_invalid_input",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_json_missing_markers",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_json_partial_markers",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_yaml_empty_content",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_yaml_invalid_input",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ParserTest::test_parser_error_cases_yaml_missing_markers",
+        "reason": "Upstream response parsing and fence/schema options are outside Ruby Resolver alignment; RubyLLM remains optional."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_align_successful",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_align_with_chunk_starting_in_middle",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_align_with_discontinuous_tokenized_text",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_align_with_discontinuous_tokenized_text_but_right_chunk",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_align_with_empty_annotated_extractions",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_align_with_no_extractions_in_chunk",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_align_with_valid_chunk",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_handle_integer_extraction",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_empty_yaml",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_empty_yaml_without_suppress_parse_errors",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_schema_error_raises_without_suppression",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_schema_error_suppressed_malformed_key_trailing_colon",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_schema_error_suppressed_non_dict_attributes",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_valid_inputs_json_no_fence",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_valid_inputs_json_with_fence",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_valid_inputs_yaml_no_fence",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      },
+      {
+        "upstream_node_id": "tests/resolver_test.py::ResolverTest::test_resolve_valid_inputs_yaml_with_fence",
+        "reason": "Upstream Resolver parser/chunk API has no Ruby Resolver equivalent; this parity suite covers source alignment only."
+      }
+    ]
+  }
 }
