@@ -28,19 +28,13 @@ class UpstreamParityTest < LangExtractTest
   end
 
   def test_matches_resolver_alignment_fixtures
-    @fixtures.fetch("resolver").each do |fixture|
-      resolver = LangExtract::Core::Resolver.new(text: fixture.fetch("text"))
-      extractions = resolver.resolve(fixture.fetch("extractions"))
-      actual = extractions.map do |extraction|
-        {
-          "status" => extraction.alignment_status,
-          "start_pos" => extraction.char_interval&.start_pos,
-          "end_pos" => extraction.char_interval&.end_pos
-        }
-      end
+    parity = @fixtures.fetch("resolver_parity")
 
-      assert_equal fixture.fetch("expected"), actual, fixture.fetch("name")
-    end
+    assert_equal "v1.2.1", parity.dig("provenance", "tag")
+    assert_equal "9cd220c14ec6dbb64ba00b710bd376ffd17f1d29", parity.dig("provenance", "commit")
+    assert_upstream_resolver_node_ids_are_mapped(parity)
+    assert_resolver_alignment_cases(@fixtures.fetch("resolver"))
+    assert_resolver_alignment_cases(parity.fetch("cases"))
   end
 
   def test_matches_format_handler_fixtures
@@ -66,5 +60,41 @@ class UpstreamParityTest < LangExtractTest
     assert_equal 4, manifest.dig("counts", "ollama_integration")
     assert_equal 82, manifest.dig("counts", "by_file", "tests/resolver_test.py")
     assert_equal 59, manifest.dig("counts", "by_file", "tests/tokenizer_test.py")
+  end
+
+  private
+
+  def assert_upstream_resolver_node_ids_are_mapped(parity)
+    upstream_node_ids = upstream_resolver_node_ids
+    mapped_node_ids = parity.fetch("cases").flat_map { |fixture| fixture.fetch("upstream_node_ids") }
+    mapped_node_ids.concat(parity.fetch("unsupported_cases").map { |fixture| fixture.fetch("upstream_node_id") })
+
+    assert_equal upstream_node_ids.sort, mapped_node_ids.sort
+    assert_equal mapped_node_ids.length, mapped_node_ids.uniq.length
+  end
+
+  def assert_resolver_alignment_cases(fixtures)
+    fixtures.each do |fixture|
+      resolver = LangExtract::Core::Resolver.new(text: fixture.fetch("text"))
+      extractions = resolver.resolve(fixture.fetch("extractions"))
+      actual = extractions.map do |extraction|
+        {
+          "status" => extraction.alignment_status,
+          "start_pos" => extraction.char_interval&.start_pos,
+          "end_pos" => extraction.char_interval&.end_pos
+        }
+      end
+
+      assert_equal fixture.fetch("expected"), actual, fixture.fetch("name")
+    end
+  end
+
+  def upstream_resolver_node_ids
+    path = File.expand_path("../fixtures/upstream/v1_2_1_pytest_manifest.json", __dir__)
+    manifest = JSON.parse(File.read(path, encoding: "UTF-8"))
+
+    manifest.fetch("tests").filter_map do |test|
+      test.fetch("id") if test.fetch("file") == "tests/resolver_test.py"
+    end
   end
 end
