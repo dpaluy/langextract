@@ -80,6 +80,74 @@ class ResolverTest < LangExtractTest
     assert_equal text.index("Jonathon Smith"), extraction.char_interval.start_pos
   end
 
+  def test_preferred_interval_exact_match_wins
+    resolver = LangExtract::Core::Resolver.new(text: "Alice outside. Alice inside.")
+    preferred = LangExtract::CharInterval.new(start_pos: 15, end_pos: 28)
+
+    extraction = resolver.resolve([{ "text" => "Alice" }], preferred_interval: preferred).first
+
+    assert_equal LangExtract::CharInterval.new(start_pos: 15, end_pos: 20), extraction.char_interval
+  end
+
+  def test_exact_alignment_falls_back_when_preferred_occurrence_is_occupied
+    resolver = LangExtract::Core::Resolver.new(text: "Alice outside. Alice inside.")
+    preferred = LangExtract::CharInterval.new(start_pos: 15, end_pos: 28)
+
+    extractions = resolver.resolve([{ "text" => "Alice" }, { "text" => "Alice" }], preferred_interval: preferred)
+
+    assert_equal([15, 0], extractions.map { |extraction| extraction.char_interval.start_pos })
+    assert_equal [LangExtract::AlignmentStatus::EXACT] * 2, extractions.map(&:alignment_status)
+  end
+
+  def test_fuzzy_alignment_falls_back_when_preferred_occurrence_is_occupied
+    text = "Jonathon Smith outside. Jonathon Smith inside."
+    resolver = LangExtract::Core::Resolver.new(text: text)
+    preferred = LangExtract::CharInterval.new(start_pos: 24, end_pos: text.length)
+
+    extractions = resolver.resolve(
+      [{ "text" => "Jonathan Smith" }, { "text" => "Jonathan Smith" }],
+      preferred_interval: preferred
+    )
+
+    assert_equal([24, 0], extractions.map { |extraction| extraction.char_interval.start_pos })
+    assert_equal [LangExtract::AlignmentStatus::FUZZY] * 2, extractions.map(&:alignment_status)
+  end
+
+  def test_fuzzy_early_exit_returns_earliest_normalized_equal_match
+    text = "Alpha   Beta then Alpha   Beta"
+    resolver = LangExtract::Core::Resolver.new(text: text)
+
+    target = "alpha beta"
+    candidates = resolver.send(
+      :fuzzy_candidates_in_range,
+      "Alpha Beta",
+      target,
+      target.each_char.tally,
+      0...text.length,
+      []
+    )
+
+    assert_equal 1, candidates.length
+    assert_equal LangExtract::CharInterval.new(start_pos: 0, end_pos: 12), candidates.first.first
+    assert_equal 1.0, candidates.first.last
+  end
+
+  def test_fuzzy_early_exit_skips_occupied_perfect_match
+    text = "Alpha   Beta then Alpha   Beta"
+    resolver = LangExtract::Core::Resolver.new(text: text)
+
+    extractions = resolver.resolve([{ "text" => "Alpha Beta" }, { "text" => "Alpha Beta" }])
+
+    assert_equal [LangExtract::AlignmentStatus::FUZZY] * 2, extractions.map(&:alignment_status)
+    assert_equal(
+      [
+        LangExtract::CharInterval.new(start_pos: 0, end_pos: 12),
+        LangExtract::CharInterval.new(start_pos: 18, end_pos: 30)
+      ],
+      extractions.map(&:char_interval)
+    )
+  end
+
   def test_similarity_matches_sequence_matcher_ratio
     resolver = LangExtract::Core::Resolver.new(text: "placeholder")
 

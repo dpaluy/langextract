@@ -6,7 +6,7 @@ class UpstreamParityTest < LangExtractTest
   def setup
     super
     path = File.expand_path("../fixtures/upstream/core_cases.json", __dir__)
-    @fixtures = JSON.parse(File.read(path))
+    @fixtures = JSON.parse(File.read(path, encoding: "UTF-8"))
   end
 
   def test_matches_tokenizer_offset_fixtures
@@ -57,7 +57,7 @@ class UpstreamParityTest < LangExtractTest
 
   def test_upstream_v1_2_1_manifest_captures_full_collected_test_surface
     path = File.expand_path("../fixtures/upstream/v1_2_1_pytest_manifest.json", __dir__)
-    manifest = JSON.parse(File.read(path))
+    manifest = JSON.parse(File.read(path, encoding: "UTF-8"))
 
     assert_equal "v1.2.1", manifest.dig("upstream", "tag")
     assert_equal 419, manifest.dig("counts", "total")

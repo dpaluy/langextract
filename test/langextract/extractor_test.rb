@@ -114,4 +114,34 @@ class ExtractorTest < LangExtractTest
 
     assert_equal LangExtract::AlignmentStatus::UNGROUNDED, result.extractions.first.alignment_status
   end
+
+  def test_logs_suppressed_parse_errors
+    output = StringIO.new
+    LangExtract.config.logger = Logger.new(output)
+
+    result = LangExtract.extract(
+      text: "Apple reported revenue.",
+      model: @fake_model_class.new("not parseable"),
+      prompt_description: "Extract companies",
+      prompt_validation: :off,
+      suppress_parse_errors: true
+    )
+
+    assert_empty result.extractions
+    assert_includes output.string, "suppressed parse error document_id=document_0 chunk_index=0"
+  end
+
+  def test_extracts_with_logging_disabled
+    LangExtract.config.logger = nil
+
+    result = LangExtract.extract(
+      text: "Apple reported revenue.",
+      model: @fake_model_class.new("not parseable"),
+      prompt_description: "Extract companies",
+      prompt_validation: :off,
+      suppress_parse_errors: true
+    )
+
+    assert_empty result.extractions
+  end
 end

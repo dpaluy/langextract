@@ -38,6 +38,8 @@ module LangExtract
   end
 
   module Factory
+    ROUTER_MUTEX = Mutex.new
+
     module_function
 
     def create_model(config = ModelConfig.new)
@@ -45,11 +47,11 @@ module LangExtract
     end
 
     def router
-      @router ||= default_router
+      ROUTER_MUTEX.synchronize { @router ||= default_router }
     end
 
     def reset_router!
-      @router = default_router
+      ROUTER_MUTEX.synchronize { @router = default_router }
     end
 
     def default_router

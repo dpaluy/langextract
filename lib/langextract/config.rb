@@ -14,7 +14,9 @@ module LangExtract
     private
 
     def default_logger
-      defined?(Rails) ? Rails.logger : Logger.new($stderr)
+      return Rails.logger if defined?(Rails) && Rails.respond_to?(:logger) && Rails.logger
+
+      Logger.new($stderr, progname: "langextract").tap { |logger| logger.level = Logger::WARN }
     end
   end
 end

@@ -18,6 +18,8 @@ require_relative "langextract/visualization"
 require_relative "langextract/factory"
 
 module LangExtract
+  CONFIG_MUTEX = Mutex.new
+
   CharInterval = Core::CharInterval
   TokenInterval = Core::TokenInterval
   Extraction = Core::Extraction
@@ -28,7 +30,7 @@ module LangExtract
 
   class << self
     def config
-      @config ||= Config.new
+      CONFIG_MUTEX.synchronize { @config ||= Config.new }
     end
 
     def configure
@@ -36,7 +38,7 @@ module LangExtract
     end
 
     def reset_configuration!
-      @config = nil
+      CONFIG_MUTEX.synchronize { @config = nil }
       Factory.reset_router!
     end
 

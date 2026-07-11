@@ -43,4 +43,11 @@ class FactoryTest < LangExtractTest
     assert_equal "fixture", config.to_h["model"]
     refute_includes config.to_h.keys, "api_key"
   end
+
+  def test_router_initialization_is_thread_safe
+    LangExtract::Factory.instance_variable_set(:@router, nil)
+    object_ids = 20.times.map { Thread.new { LangExtract::Factory.router.object_id } }.map(&:value)
+
+    assert_equal 1, object_ids.uniq.length
+  end
 end
