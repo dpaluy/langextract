@@ -108,6 +108,7 @@ class UpstreamParityTest < LangExtractTest
       test.fetch("id") if test.fetch("file") == "tests/resolver_test.py"
     end
   end
+
   def tokenizer_manifest_ids
     manifest.fetch("tests").filter_map do |test|
       test.fetch("id") if test.fetch("file") == "tests/tokenizer_test.py"
