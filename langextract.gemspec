@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
                      "and HTML visualization."
   spec.homepage = "https://github.com/dpaluy/langextract"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 4.0"
+  spec.required_ruby_version = ">= 4.0.5"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["documentation_uri"] = "https://rubydoc.info/gems/langextract"
@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.metadata["rubygems_mfa_required"] = "true"
 
   gemspec = File.basename(__FILE__)
-  spec.files = IO.popen(%w[git ls-files -z --cached --others --exclude-standard], chdir: __dir__, err: IO::NULL) do |ls|
+  spec.files = IO.popen(%w[git ls-files -z --cached], chdir: __dir__, err: IO::NULL) do |ls|
     ls.readlines("\x0", chomp: true).reject do |file|
       excluded = %w[
         .agents/ .github/ .gitignore .omx/ .ruby-lsp/ .ruby-version .rubocop.yml .tool-versions .yardopts

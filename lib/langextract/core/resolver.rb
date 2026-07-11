@@ -90,23 +90,21 @@ module LangExtract
       def exact_intervals_in_range(extraction_text, range)
         intervals = []
         cursor = range.begin
-
-        while cursor < range.end
+        range_end = range.end
+        while cursor < range_end
           match_pos = text.index(extraction_text, cursor)
-          break unless match_pos && match_pos < range.end
+          break unless match_pos && match_pos < range_end
 
           end_pos = match_pos + extraction_text.length
-          intervals << CharInterval.new(start_pos: match_pos, end_pos: end_pos) if end_pos <= range.end
+          intervals << CharInterval.new(start_pos: match_pos, end_pos: end_pos) if end_pos <= range_end
           cursor = match_pos + 1
         end
-
         if intervals.empty?
-          downcase_text = text[range].downcase
-          downcase_target = extraction_text.downcase
-          local_pos = downcase_text.index(downcase_target)
-          if local_pos
-            intervals << CharInterval.new(start_pos: range.begin + local_pos,
-                                          end_pos: range.begin + local_pos + extraction_text.length)
+          pattern = Regexp.new(Regexp.escape(extraction_text), Regexp::IGNORECASE)
+          cursor = range.begin
+          while (match = pattern.match(text, cursor)) && match.begin(0) < range_end
+            intervals << CharInterval.new(start_pos: match.begin(0), end_pos: match.end(0)) if match.end(0) <= range_end
+            cursor = match.begin(0) + 1
           end
         end
 

@@ -27,6 +27,24 @@ class ChunkingTest < LangExtractTest
     assert_equal document.text, chunks.map(&:text).join
   end
 
+  def test_splits_on_whitespace_without_exceeding_the_buffer
+    document = LangExtract::Document.new(text: "aaaaa bbbb", id: "doc")
+    chunks = LangExtract::Core::SentenceAwareChunker.new(max_char_buffer: 5).chunks(document)
+
+    assert(chunks.all? { |chunk| chunk.text.length <= 5 })
+    assert_equal document.text, chunks.map(&:text).join
+  end
+
+  def test_split_chunks_never_exceed_the_buffer
+    [["aaaaa bbbb", 5], ["one two three four", 4], ["alpha beta gamma delta", 6]].each do |text, max_char_buffer|
+      chunks = LangExtract::Core::SentenceAwareChunker.new(max_char_buffer:).chunks(text)
+
+      assert_operator chunks.length, :>, 1
+      assert(chunks.all? { |chunk| chunk.text.length <= max_char_buffer })
+      assert_equal text, chunks.map(&:text).join
+    end
+  end
+
   def test_sentence_boundaries_include_closing_quotes
     document = LangExtract::Document.new(text: "\"Hello.\" Next sentence.", id: "doc")
     chunks = LangExtract::Core::SentenceAwareChunker.new(max_char_buffer: 20).chunks(document)

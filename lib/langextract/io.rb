@@ -10,7 +10,7 @@ module LangExtract
     module_function
 
     def save_annotated_documents(path, documents)
-      normalized = Array(documents)
+      normalized = documents.is_a?(Hash) ? [documents] : Array(documents)
       ::File.open(path, "w:UTF-8") do |file|
         normalized.each do |document|
           annotated = document.is_a?(Core::AnnotatedDocument) ? document : Core::AnnotatedDocument.from_h(document)
@@ -23,11 +23,13 @@ module LangExtract
     end
 
     def load_annotated_documents_jsonl(path)
-      ::File.readlines(path, chomp: true, encoding: "UTF-8").filter_map do |line|
+      documents = []
+      ::File.foreach(path, encoding: "UTF-8") do |line|
         next if line.strip.empty?
 
-        Core::AnnotatedDocument.from_h(JSON.parse(line))
+        documents << Core::AnnotatedDocument.from_h(JSON.parse(line))
       end
+      documents
     rescue SystemCallError, JSON::ParserError, EncodingError => e
       raise Core::IOFailure, "failed to load annotated documents: #{e.message}"
     end

@@ -84,7 +84,7 @@ module LangExtract
 
       def split_position(text, start_pos)
         limit = [start_pos + max_char_buffer, text.length].min
-        whitespace = text.rindex(/\s/, limit)
+        whitespace = text.rindex(/\s/, limit - 1)
         return limit unless whitespace && whitespace > start_pos
 
         whitespace + 1

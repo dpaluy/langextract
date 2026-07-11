@@ -8,6 +8,7 @@ require_relative "core/prompting"
 module LangExtract
   class Extractor
     DEFAULT_MAX_CHAR_BUFFER = Core::SentenceAwareChunker::DEFAULT_MAX_CHAR_BUFFER
+    FORMATS = %i[auto json yaml].freeze
 
     def initialize(model:, prompt_description:, examples: [], additional_context: nil,
                    max_char_buffer: DEFAULT_MAX_CHAR_BUFFER, context_window_chars: 0,
@@ -18,7 +19,7 @@ module LangExtract
                    tokenizer: Core::UnicodeTokenizer.new)
       @model = model
       @prompt_description = prompt_description
-      @examples = examples
+      @examples = examples.nil? ? [] : examples
       @additional_context = additional_context
       @max_char_buffer = max_char_buffer
       @context_window_chars = context_window_chars
@@ -31,6 +32,7 @@ module LangExtract
       @allow_overlaps = allow_overlaps
       @fuzzy_threshold = fuzzy_threshold
       @tokenizer = tokenizer
+      validate_configuration!
       validate_model!
     end
 
@@ -141,13 +143,17 @@ module LangExtract
         interval&.end_pos,
         extraction.text,
         extraction.description,
-        extraction.extraction_class
+        extraction.extraction_class,
+        extraction.attributes,
+        extraction.group_id
       ]
     end
 
     def coerce_documents(text, documents)
       if documents
-        Array(documents).map.with_index { |document, index| coerce_document(document, index) }
+        (documents.is_a?(Hash) ? [documents] : Array(documents)).map.with_index do |document, index|
+          coerce_document(document, index)
+        end
       elsif text
         [Core::Document.new(text: text, id: "document_0")]
       else
@@ -166,6 +172,46 @@ module LangExtract
       return if model.respond_to?(:infer)
 
       raise Core::InvalidModelConfigError, "model must respond to #infer(prompt:)"
+    end
+
+    def validate_configuration!
+      validate_integer!(extraction_passes, "extraction_passes", 1)
+      validate_integer!(max_char_buffer, "max_char_buffer", 1)
+      validate_integer!(context_window_chars, "context_window_chars", 0)
+      validate_fuzzy_threshold!
+      validate_prompt_description!
+      raise ArgumentError, "examples must respond to #each" unless examples.respond_to?(:each)
+
+      validate_symbol_value!(format, FORMATS, "format must be one of: auto, json, yaml")
+      validate_symbol_value!(
+        prompt_validation,
+        Core::PromptValidation::MODES,
+        "prompt_validation must be one of: off, warning, error"
+      )
+    end
+
+    def validate_integer!(value, name, minimum)
+      return if value.is_a?(Integer) && value >= minimum
+
+      raise ArgumentError, "#{name} must be an Integer >= #{minimum}"
+    end
+
+    def validate_fuzzy_threshold!
+      return if fuzzy_threshold.is_a?(Numeric) && (0.0..1.0).cover?(fuzzy_threshold)
+
+      raise ArgumentError, "fuzzy_threshold must be Numeric within 0.0..1.0"
+    end
+
+    def validate_prompt_description!
+      return if prompt_description.is_a?(String) && !prompt_description.empty?
+
+      raise ArgumentError, "prompt_description must be a non-empty String"
+    end
+
+    def validate_symbol_value!(value, valid_values, error_message)
+      return if value.respond_to?(:to_sym) && valid_values.include?(value.to_sym)
+
+      raise ArgumentError, error_message
     end
   end
 end

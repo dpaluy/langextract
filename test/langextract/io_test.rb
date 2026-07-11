@@ -32,4 +32,36 @@ class IOTest < LangExtractTest
       end
     end
   end
+
+  def test_saves_a_bare_hash_as_one_document
+    annotated = annotated_document("one")
+
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, "out.jsonl")
+      LangExtract::IO.save_annotated_documents(path, annotated.to_h)
+
+      loaded = LangExtract::IO.load_annotated_documents_jsonl(path)
+      assert_equal 1, loaded.length
+      assert_equal annotated.to_h, loaded.first.to_h
+    end
+  end
+
+  def test_loads_multiple_jsonl_records_and_skips_blank_lines
+    first = annotated_document("one")
+    second = annotated_document("two")
+
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, "out.jsonl")
+      File.write(path, "#{JSON.generate(first.to_h)}\n\n#{JSON.generate(second.to_h)}\n", encoding: "UTF-8")
+
+      assert_equal [first.to_h, second.to_h], LangExtract::IO.load_annotated_documents_jsonl(path).map(&:to_h)
+    end
+  end
+
+  private
+
+  def annotated_document(id)
+    document = LangExtract::Document.new(text: "Alice met Bob.", id: id)
+    LangExtract::AnnotatedDocument.new(document: document, extractions: [])
+  end
 end

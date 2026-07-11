@@ -11,7 +11,7 @@ Use it when a Ruby or Rails app needs structured LLM output that can be traced b
 
 ## Features
 
-- **Source grounding** — every extraction includes character and token offsets back to the original text
+- **Source grounding** — grounded extractions include character and token offsets back to the original text, while ungrounded results retain an explicit alignment status
 - **Structured outputs** — deterministic, serializable result objects with alignment status
 - **Long-document chunking** — sentence-aware chunking with sequential multi-pass extraction
 - **Interactive visualization** — self-contained HTML highlighting of extraction spans
@@ -20,7 +20,7 @@ Use it when a Ruby or Rails app needs structured LLM output that can be traced b
 
 ## Requirements
 
-- Ruby >= 4.0
+- Ruby >= 4.0.5
 - Tested on Ruby 4.0.5
 - Optional live inference adapter: `ruby_llm` >= 1.0 when using `LangExtract::Factory.create_model`
 

@@ -47,6 +47,37 @@ class ResolverTest < LangExtractTest
     )
   end
 
+  def test_case_insensitive_exact_alignment_uses_original_text_offsets
+    text = "İX foo"
+    resolver = LangExtract::Core::Resolver.new(text: text)
+    extraction = resolver.resolve([{ "text" => "FOO" }]).first
+
+    assert_equal LangExtract::AlignmentStatus::EXACT, extraction.alignment_status
+    assert_equal LangExtract::CharInterval.new(start_pos: 3, end_pos: 6), extraction.char_interval
+    assert_equal "foo", text[extraction.char_interval.start_pos...extraction.char_interval.end_pos]
+    assert_equal "FOO".downcase, text[extraction.char_interval.start_pos...extraction.char_interval.end_pos].downcase
+  end
+
+  def test_case_insensitive_exact_alignment_finds_each_repeated_occurrence
+    text = "ALPHA ALPHA"
+    resolver = LangExtract::Core::Resolver.new(text: text)
+    extraction_text = "alpha"
+    extractions = resolver.resolve([{ "text" => extraction_text }, { "text" => extraction_text }])
+
+    assert_equal [LangExtract::AlignmentStatus::EXACT] * 2, extractions.map(&:alignment_status)
+    assert_equal(
+      [
+        LangExtract::CharInterval.new(start_pos: 0, end_pos: 5),
+        LangExtract::CharInterval.new(start_pos: 6, end_pos: 11)
+      ],
+      extractions.map(&:char_interval)
+    )
+    extractions.each do |extraction|
+      slice = text[extraction.char_interval.start_pos...extraction.char_interval.end_pos]
+      assert_equal extraction_text.downcase, slice.downcase
+    end
+  end
+
   def test_allows_overlapping_spans_when_configured
     resolver = LangExtract::Core::Resolver.new(text: "Alice met Bob.", allow_overlaps: true)
     extractions = resolver.resolve([{ "text" => "Alice" }, { "text" => "Alice met" }])

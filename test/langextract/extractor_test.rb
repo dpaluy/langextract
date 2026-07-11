@@ -43,12 +43,72 @@ class ExtractorTest < LangExtractTest
     assert_equal LangExtract::AlignmentStatus::EXACT, result.first.extractions.first.alignment_status
   end
 
+  def test_treats_a_bare_hash_as_one_document
+    result = LangExtract.extract(
+      documents: { text: "Apple reported revenue.", id: "one" },
+      model: @fake_model_class.new({ extractions: [{ text: "Apple" }] }.to_json),
+      prompt_description: "Extract companies",
+      prompt_validation: :off
+    )
+
+    assert_equal 1, result.length
+    assert_equal "one", result.first.document.id
+    assert_equal "Apple reported revenue.", result.first.document.text
+  end
+
+  def test_preserves_distinct_attributes_and_group_ids_while_deduplicating_identical_extractions
+    model = @fake_model_class.new(
+      {
+        extractions: [
+          { text: "Apple", attributes: { role: "buyer" }, group_id: "group-a" },
+          { text: "Apple", attributes: { role: "seller" }, group_id: "group-a" },
+          { text: "Apple", attributes: { role: "buyer" }, group_id: "group-b" },
+          { text: "Apple", attributes: { role: "buyer" }, group_id: "group-a" }
+        ]
+      }.to_json
+    )
+
+    result = LangExtract.extract(
+      text: "Apple reported revenue.",
+      model: model,
+      prompt_description: "Extract companies",
+      prompt_validation: :off,
+      allow_overlaps: true
+    )
+
+    assert_equal 3, result.extractions.length
+    roles = result.extractions.map { |extraction| extraction.attributes["role"] }
+    assert_equal %w[buyer seller buyer], roles
+    assert_equal %w[group-a group-a group-b], result.extractions.map(&:group_id)
+  end
+
   def test_validates_model_contract_at_construction
     error = assert_raises(LangExtract::InvalidModelConfigError) do
       LangExtract::Extractor.new(model: Object.new, prompt_description: "Extract")
     end
 
     assert_match(/#infer/, error.message)
+  end
+
+  def test_validates_extractor_configuration_at_construction
+    model = @fake_model_class.new("{}")
+
+    [0, -1].each do |extraction_passes|
+      assert_raises(ArgumentError) do
+        LangExtract::Extractor.new(
+          model: model,
+          prompt_description: "Extract",
+          extraction_passes: extraction_passes
+        )
+      end
+    end
+
+    assert_raises(ArgumentError) do
+      LangExtract::Extractor.new(model: model, prompt_description: "Extract", fuzzy_threshold: 1.5)
+    end
+    assert_raises(ArgumentError) do
+      LangExtract::Extractor.new(model: model, prompt_description: "")
+    end
   end
 
   def test_multi_pass_extraction_uses_distinct_prompts

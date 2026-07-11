@@ -12,7 +12,7 @@ module LangExtract
       def stringify_keys(hash)
         (hash || {}).each_with_object({}) do |(key, value), result|
           result[key.to_s] = coerce_value(value)
-        end
+        end.freeze
       end
 
       def coerce_value(value)

@@ -53,4 +53,22 @@ class DataTest < LangExtractTest
       example.extractions
     )
   end
+
+  def test_extraction_attributes_deep_freeze_nested_hashes
+    extraction = LangExtract::Extraction.new(text: "Alice", attributes: { nested: { role: "before" } })
+
+    assert_raises(FrozenError) { extraction.attributes["nested"]["role"] = "after" }
+  end
+
+  def test_extraction_attributes_deep_freeze_hashes_nested_in_arrays
+    extraction = LangExtract::Extraction.new(text: "Alice", attributes: { roles: [{ name: "before" }] })
+
+    assert_raises(FrozenError) { extraction.attributes["roles"][0]["name"] = "after" }
+  end
+
+  def test_document_metadata_deep_freezes_nested_hashes
+    document = LangExtract::Document.new(text: "Alice", metadata: { nested: { source: "before" } })
+
+    assert_raises(FrozenError) { document.metadata["nested"]["source"] = "after" }
+  end
 end
