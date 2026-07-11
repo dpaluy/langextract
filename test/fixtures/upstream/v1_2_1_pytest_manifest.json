@@ -3,14 +3,23 @@
     "repo": "https://github.com/google/langextract",
     "tag": "v1.2.1",
     "commit": "9cd220c14ec6dbb64ba00b710bd376ffd17f1d29",
-    "collection_command": "pytest --collect-only -q tests plus explicit live/Ollama collection",
-    "note": "The v1.2.1 tag collected 404 deterministic tests and 15 live/Ollama tests in this environment; this differs from the PRD snapshot count and should be reconciled before a 1.0 parity claim."
+    "collection_script": "script/collect_upstream_v1_2_1_tests",
+    "collection_commands": {
+      "standard_deterministic_ci": "pytest --collect-only -q -m 'not live_api and not requires_pip' tests",
+      "requires_pip": "pytest --collect-only -q -m requires_pip tests",
+      "default_discovery": "pytest --collect-only -q tests",
+      "live_api_explicit": "pytest --collect-only -q tests/test_live_api.py",
+      "ollama_integration_explicit": "pytest --collect-only -q tests/test_ollama_integration.py"
+    },
+    "historical_prd_snapshot": "The older 479 deterministic / 494 total figures are an unverified historical snapshot; no source in this repository proves their cause or relationship to v1.2.1."
   },
   "counts": {
-    "total": 419,
-    "deterministic": 404,
-    "live_api": 11,
-    "ollama_integration": 4,
+    "standard_deterministic_ci": 403,
+    "requires_pip": 1,
+    "default_discovery": 404,
+    "live_api_explicit": 11,
+    "ollama_integration_explicit": 4,
+    "union": 419,
     "by_file": {
       "tests/annotation_test.py": 29,
       "tests/chunking_test.py": 19,

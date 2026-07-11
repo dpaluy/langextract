@@ -240,7 +240,24 @@ Configuration and provider router initialization are mutex-guarded.
 
 This is a Ruby gem slice against the Google LangExtract v1.2.1. It includes the core public contracts, an optional RubyLLM-backed provider adapter, and fixture-backed tests for deterministic local behavior.
 
-The upstream v1.2.1 tag was collected with pytest into `test/fixtures/upstream/v1_2_1_pytest_manifest.json`: 404 deterministic tests plus 11 live API tests and 4 Ollama integration tests. That collection does not match the older PRD snapshot count of 479 deterministic / 494 total, so the count discrepancy must be reconciled before a 1.0 parity claim.
+The upstream v1.2.1 commit `9cd220c14ec6dbb64ba00b710bd376ffd17f1d29` has a reproducible collection record in `test/fixtures/upstream/v1_2_1_pytest_manifest.json`:
+
+- **403** standard deterministic CI tests (`-m 'not live_api and not requires_pip'`)
+- **1** `requires_pip` test, making **404** tests in default pytest discovery
+- **11** live API tests, collected only by explicitly naming `tests/test_live_api.py`
+- **4** Ollama integration tests, collected only by explicitly naming `tests/test_ollama_integration.py`
+- **419** tests in the union of default discovery and those two explicit suites
+
+The two special suite filenames do not match upstream's `python_files = "*_test.py"` discovery pattern, so they are absent unless explicitly named. To reproduce the record, check out the recorded commit, create the upstream test environment, then run the script:
+
+```bash
+cd /path/to/google-langextract
+uv venv .venv
+uv pip install --python .venv/bin/python -e '.[test]'
+/path/to/langextract/script/collect_upstream_v1_2_1_tests "$PWD"
+```
+
+The older PRD figures of 479 deterministic / 494 total are an unverified historical snapshot: this repository has no source proof for why they differ, so they are not used for a parity denominator.
 
 Deferred v1+ items:
 

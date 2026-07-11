@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Reproduce the upstream LangExtract v1.2.1 pytest collection model.
+set -euo pipefail
+
+expected_commit="9cd220c14ec6dbb64ba00b710bd376ffd17f1d29"
+upstream_dir="${1:-/tmp/google-langextract-v1.2.1}"
+
+if [[ ! -d "$upstream_dir/.git" ]]; then
+  printf 'Expected an upstream checkout at %s\n' "$upstream_dir" >&2
+  printf 'Clone google/langextract and check out %s first.\n' "$expected_commit" >&2
+  exit 1
+fi
+
+actual_commit="$(git -C "$upstream_dir" rev-parse HEAD)"
+if [[ "$actual_commit" != "$expected_commit" ]]; then
+  printf 'Expected upstream commit %s, got %s\n' "$expected_commit" "$actual_commit" >&2
+  exit 1
+fi
+
+if [[ -n "${PYTHON_BIN:-}" ]]; then
+  python_bin="$PYTHON_BIN"
+else
+  python_bin="$upstream_dir/.venv/bin/python"
+fi
+
+if [[ ! -x "$python_bin" ]]; then
+  printf 'Expected an executable Python environment at %s\n' "$python_bin" >&2
+  printf '%s\n' "Create it with: cd $upstream_dir && uv venv .venv && uv pip install --python .venv/bin/python -e '.[test]'" >&2
+  exit 1
+fi
+
+if ! "$python_bin" -m pytest --version >/dev/null 2>&1; then
+  printf 'pytest must be installed in %s.\n' "$python_bin" >&2
+  exit 1
+fi
+
+collect_count() {
+  local output count
+  output="$(cd "$upstream_dir" && "$python_bin" -m pytest "$@")"
+  printf '%s\n' "$output" >&2
+  count="$(printf '%s\n' "$output" | python3 -c '
+import re
+import sys
+match = re.search(r"(?:(\d+)/)?(\d+) tests? collected", sys.stdin.read())
+if not match:
+    raise SystemExit("Could not parse pytest collection count")
+print(match.group(1) or match.group(2))
+')"
+  printf '%s\n' "$count"
+}
+
+standard_deterministic_ci="$(collect_count --collect-only -q -m 'not live_api and not requires_pip' tests)"
+requires_pip="$(collect_count --collect-only -q -m requires_pip tests)"
+default_discovery="$(collect_count --collect-only -q tests)"
+live_api_explicit="$(collect_count --collect-only -q tests/test_live_api.py)"
+ollama_integration_explicit="$(collect_count --collect-only -q tests/test_ollama_integration.py)"
+union=$((default_discovery + live_api_explicit + ollama_integration_explicit))
+
+printf '\nCollection summary for %s\n' "$actual_commit"
+printf 'standard deterministic CI: %s\n' "$standard_deterministic_ci"
+printf 'requires_pip: %s\n' "$requires_pip"
+printf 'default discovery: %s\n' "$default_discovery"
+printf 'explicit live API: %s\n' "$live_api_explicit"
+printf 'explicit Ollama integration: %s\n' "$ollama_integration_explicit"
+printf 'union: %s\n' "$union"
+
+[[ "$standard_deterministic_ci" == "403" ]]
+[[ "$requires_pip" == "1" ]]
+[[ "$default_discovery" == "404" ]]
+[[ "$live_api_explicit" == "11" ]]
+[[ "$ollama_integration_explicit" == "4" ]]
+[[ "$union" == "419" ]]

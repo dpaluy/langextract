@@ -59,12 +59,23 @@ class UpstreamParityTest < LangExtractTest
     path = File.expand_path("../fixtures/upstream/v1_2_1_pytest_manifest.json", __dir__)
     manifest = JSON.parse(File.read(path, encoding: "UTF-8"))
 
+    counts = manifest.fetch("counts")
+    expected_counts = {
+      "standard_deterministic_ci" => 403,
+      "requires_pip" => 1,
+      "default_discovery" => 404,
+      "live_api_explicit" => 11,
+      "ollama_integration_explicit" => 4,
+      "union" => 419
+    }
+
     assert_equal "v1.2.1", manifest.dig("upstream", "tag")
-    assert_equal 419, manifest.dig("counts", "total")
-    assert_equal 404, manifest.dig("counts", "deterministic")
-    assert_equal 11, manifest.dig("counts", "live_api")
-    assert_equal 4, manifest.dig("counts", "ollama_integration")
-    assert_equal 82, manifest.dig("counts", "by_file", "tests/resolver_test.py")
-    assert_equal 59, manifest.dig("counts", "by_file", "tests/tokenizer_test.py")
+    assert_equal "9cd220c14ec6dbb64ba00b710bd376ffd17f1d29", manifest.dig("upstream", "commit")
+    assert_equal expected_counts, counts.slice(*expected_counts.keys)
+    assert_equal counts.fetch("union"),
+                 counts.fetch("default_discovery") + counts.fetch("live_api_explicit") +
+                 counts.fetch("ollama_integration_explicit")
+    assert_equal 82, counts.dig("by_file", "tests/resolver_test.py")
+    assert_equal 59, counts.dig("by_file", "tests/tokenizer_test.py")
   end
 end
