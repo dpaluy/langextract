@@ -52,26 +52,28 @@ module LangExtract
       chunker = Core::SentenceAwareChunker.new(max_char_buffer: max_char_buffer, tokenizer: tokenizer)
       prompt_builder = Core::PromptBuilder.new(validation_mode: prompt_validation)
       format_handler = Core::FormatHandler.new
+      resolver = Core::Resolver.new(
+        text: document.text,
+        tokenizer: tokenizer,
+        fuzzy_threshold: fuzzy_threshold,
+        allow_overlaps: allow_overlaps,
+        suppress_alignment_errors: suppress_alignment_errors
+      )
       extractions = []
 
       chunker.chunks(document).each do |chunk|
         extraction_passes.times do |pass_index|
           raw_output = infer(prompt_builder, document, chunk, pass_index)
-          parsed = parse(format_handler, raw_output)
-          resolver = Core::Resolver.new(
-            text: document.text,
-            tokenizer: tokenizer,
-            fuzzy_threshold: fuzzy_threshold,
-            allow_overlaps: allow_overlaps,
-            suppress_alignment_errors: suppress_alignment_errors
-          )
+          parsed = parse(format_handler, raw_output, document: document, chunk: chunk)
           extractions.concat(
             resolver.resolve(parsed, document_id: document.id, preferred_interval: chunk.char_interval)
           )
         end
       end
 
-      Core::AnnotatedDocument.new(document: document, extractions: merge_extractions(extractions))
+      annotated = Core::AnnotatedDocument.new(document: document, extractions: merge_extractions(extractions))
+      log_document_summary(annotated)
+      annotated
     end
 
     def infer(prompt_builder, document, chunk, pass_index)
@@ -94,12 +96,23 @@ module LangExtract
       result.respond_to?(:text) ? result.text.to_s : result.to_s
     end
 
-    def parse(format_handler, raw_output)
+    def parse(format_handler, raw_output, document:, chunk:)
       format_handler.parse(raw_output, format: format, strict: strict)
-    rescue Core::FormatParsingError
+    rescue Core::FormatParsingError => e
       raise unless suppress_parse_errors
 
+      LangExtract.config.logger&.warn(
+        "suppressed parse error document_id=#{document.id} chunk_index=#{chunk.index}: #{e.message}"
+      )
       []
+    end
+
+    def log_document_summary(annotated)
+      counts = annotated.extractions.group_by(&:alignment_status).transform_values(&:length)
+      statuses = counts.sort.map { |status, count| "#{status}=#{count}" }.join(",")
+      LangExtract.config.logger&.debug(
+        "document_id=#{annotated.document.id} extractions=#{annotated.extractions.length} alignment_status=#{statuses}"
+      )
     end
 
     def merge_extractions(extractions)

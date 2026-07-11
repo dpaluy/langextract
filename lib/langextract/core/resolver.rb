@@ -5,6 +5,20 @@ require_relative "tokenizer"
 
 module LangExtract
   module Core
+    module SimilarityUpperBound
+      module_function
+
+      def passes?(target, candidate, target_counts, threshold)
+        denominator = target.length + candidate.length
+        length_matches = [target.length, candidate.length].min
+        return false if (2.0 * length_matches / denominator) < threshold
+
+        candidate_counts = candidate.each_char.tally
+        character_matches = target_counts.sum { |character, count| [count, candidate_counts[character].to_i].min }
+        (2.0 * character_matches / denominator) >= threshold
+      end
+    end
+
     class Resolver
       DEFAULT_FUZZY_THRESHOLD = 0.78
       MAX_FUZZY_CANDIDATE_STARTS = 4_000
@@ -61,16 +75,16 @@ module LangExtract
       end
 
       def find_exact(extraction_text, preferred_interval, occupied)
-        intervals = candidate_search_ranges(preferred_interval).flat_map do |range|
-          exact_intervals_in_range(extraction_text, range)
+        overlap_fallback = nil
+
+        candidate_search_ranges(preferred_interval).each do |range|
+          intervals = exact_intervals_in_range(extraction_text, range).uniq
+          overlap_fallback ||= intervals.first
+          non_overlap = intervals.find { |interval| allow_overlaps || !overlaps_any?(interval, occupied) }
+          return [non_overlap, AlignmentStatus::EXACT] if non_overlap
         end
-        intervals = intervals.uniq
-        return nil if intervals.empty?
 
-        first_non_overlap = intervals.find { |interval| allow_overlaps || !overlaps_any?(interval, occupied) }
-        return [first_non_overlap, AlignmentStatus::EXACT] if first_non_overlap
-
-        [intervals.first, AlignmentStatus::OVERLAP]
+        overlap_fallback && [overlap_fallback, AlignmentStatus::OVERLAP]
       end
 
       def exact_intervals_in_range(extraction_text, range)
@@ -91,10 +105,8 @@ module LangExtract
           downcase_target = extraction_text.downcase
           local_pos = downcase_text.index(downcase_target)
           if local_pos
-            intervals << CharInterval.new(
-              start_pos: range.begin + local_pos,
-              end_pos: range.begin + local_pos + extraction_text.length
-            )
+            intervals << CharInterval.new(start_pos: range.begin + local_pos,
+                                          end_pos: range.begin + local_pos + extraction_text.length)
           end
         end
 
@@ -105,19 +117,21 @@ module LangExtract
         target = normalize_for_match(extraction_text)
         return nil if target.empty?
 
-        candidates = candidate_search_ranges(preferred_interval).flat_map do |range|
-          fuzzy_candidates_in_range(extraction_text, target, range)
+        target_counts = target.each_char.tally
+        overlap_fallback = nil
+
+        candidate_search_ranges(preferred_interval).each do |range|
+          candidates = fuzzy_candidates_in_range(extraction_text, target, target_counts, range, occupied)
+          candidates = ranked_unique_candidates(candidates)
+          overlap_fallback ||= candidates.first&.first
+          non_overlap = candidates.find { |interval, _score| allow_overlaps || !overlaps_any?(interval, occupied) }
+          return [non_overlap.first, AlignmentStatus::FUZZY] if non_overlap
         end
-        candidates = ranked_unique_candidates(candidates)
-        return nil if candidates.empty?
 
-        non_overlap = candidates.find { |interval, _score| allow_overlaps || !overlaps_any?(interval, occupied) }
-        return [non_overlap.first, AlignmentStatus::FUZZY] if non_overlap
-
-        [candidates.first.first, AlignmentStatus::OVERLAP]
+        overlap_fallback && [overlap_fallback, AlignmentStatus::OVERLAP]
       end
 
-      def fuzzy_candidates_in_range(extraction_text, normalized_target, range)
+      def fuzzy_candidates_in_range(extraction_text, normalized_target, target_counts, range, occupied)
         target_length = extraction_text.length
         min_length = [1, (target_length * 0.65).floor].max
         max_length = [(target_length * 1.35).ceil, min_length].max
@@ -129,13 +143,18 @@ module LangExtract
             next if end_pos > range.end
 
             candidate = text[start_pos...end_pos]
-            score = similarity(normalized_target, normalize_for_match(candidate))
+            normalized_candidate = normalize_for_match(candidate)
+            next unless SimilarityUpperBound.passes?(normalized_target, normalized_candidate, target_counts,
+                                                     fuzzy_threshold)
+
+            score = similarity(normalized_target, normalized_candidate)
             next if score < fuzzy_threshold
 
-            candidates << [
-              CharInterval.new(start_pos: start_pos, end_pos: end_pos),
-              score
-            ]
+            match = [CharInterval.new(start_pos: start_pos, end_pos: end_pos), score]
+            interval = match.first
+            return [match] if score >= 1.0 && (allow_overlaps || !overlaps_any?(interval, occupied))
+
+            candidates << match
           end
         end
 

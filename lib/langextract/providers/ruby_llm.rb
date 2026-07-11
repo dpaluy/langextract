@@ -2,6 +2,7 @@
 
 require_relative "base"
 require_relative "../core/types"
+require "timeout"
 
 module LangExtract
   module Providers
@@ -14,10 +15,39 @@ module LangExtract
       rescue LoadError => e
         raise Core::ProviderConfigError, "ruby_llm is required for live provider inference: #{e.message}"
       rescue StandardError => e
-        raise Core::ProviderConfigError, "provider inference failed: #{e.message}"
+        error_class = provider_error_class(e)
+        raise unless error_class
+
+        raise error_class, "provider inference failed: #{e.message}"
       end
 
       private
+
+      def provider_error_class(error)
+        return Core::ProviderTimeoutError if timeout_error?(error)
+        return Core::ProviderAuthError if ruby_llm_error?(error, :UnauthorizedError, :ForbiddenError,
+                                                          :PaymentRequiredError)
+        return Core::ProviderConfigError if ruby_llm_error?(error, :ConfigurationError)
+        return Core::ProviderRateLimitError if ruby_llm_error?(error, :RateLimitError, :OverloadedError,
+                                                               :ServiceUnavailableError)
+        return Core::ProviderResponseError if defined?(RubyLLM::Error) && error.is_a?(RubyLLM::Error)
+
+        nil
+      end
+
+      def timeout_error?(error)
+        error.is_a?(Timeout::Error) || error.is_a?(Errno::ETIMEDOUT) ||
+          (defined?(Faraday::TimeoutError) && error.is_a?(Faraday::TimeoutError)) ||
+          error.class.name.to_s.match?(/timeout/i)
+      end
+
+      def ruby_llm_error?(error, *constant_names)
+        return false unless defined?(RubyLLM)
+
+        constant_names.any? do |constant_name|
+          RubyLLM.const_defined?(constant_name, false) && error.is_a?(RubyLLM.const_get(constant_name))
+        end
+      end
 
       def chat_options
         options = config.options.dup

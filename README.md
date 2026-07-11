@@ -20,8 +20,8 @@ Use it when a Ruby or Rails app needs structured LLM output that can be traced b
 
 ## Requirements
 
-- Ruby >= 3.4.5
-- Tested on Ruby 3.4.5 and 4.0.2
+- Ruby >= 4.0
+- Tested on Ruby 4.0.5
 - Optional live inference adapter: `ruby_llm` >= 1.0 when using `LangExtract::Factory.create_model`
 
 ## Installation
@@ -172,12 +172,20 @@ LangExtract::Core::FormatHandler.new.parse(model_output, schema: schema)
 
 ## Error handling
 
+Rescue `LangExtract::ProviderError` for all recognized provider failures, or rescue a specific subclass:
+
+- `LangExtract::ProviderAuthError` for authentication and authorization failures
+- `LangExtract::ProviderRateLimitError` for provider throttling
+- `LangExtract::ProviderTimeoutError` for request timeouts
+- `LangExtract::ProviderResponseError` for invalid or unsuccessful provider responses
+- `LangExtract::ProviderConfigError` for invalid provider configuration
+
 ```ruby
 begin
   LangExtract.extract(...)
 rescue LangExtract::InvalidModelConfigError => e
   warn "Invalid model configuration: #{e.message}"
-rescue LangExtract::ProviderConfigError => e
+rescue LangExtract::ProviderError => e
   warn "Provider failed: #{e.message}"
 rescue LangExtract::PromptValidationError, LangExtract::FormatParsingError => e
   warn e.message
@@ -187,6 +195,20 @@ rescue LangExtract::IOFailure => e
   warn "Could not read or write LangExtract data: #{e.message}"
 end
 ```
+
+Unknown errors propagate. Mapped provider errors preserve the original exception as `#cause`.
+
+## Logging
+
+```ruby
+LangExtract.configure { |config| config.logger = Logger.new($stdout) }
+```
+
+Set `logger` to `nil` to disable logging. `Rails.logger` is auto-detected when present.
+
+## Thread safety
+
+Configuration and provider router initialization are mutex-guarded.
 
 ## API reference
 

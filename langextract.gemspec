@@ -13,12 +13,12 @@ Gem::Specification.new do |spec|
                      "and HTML visualization."
   spec.homepage = "https://github.com/dpaluy/langextract"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.4.5"
+  spec.required_ruby_version = ">= 4.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["documentation_uri"] = "https://rubydoc.info/gems/langextract"
   spec.metadata["source_code_uri"] = spec.homepage
-  spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
+  spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/master/CHANGELOG.md"
   spec.metadata["bug_tracker_uri"] = "#{spec.homepage}/issues"
   spec.metadata["rubygems_mfa_required"] = "true"
 
@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
     ls.readlines("\x0", chomp: true).reject do |file|
       excluded = %w[
         .agents/ .github/ .gitignore .omx/ .ruby-lsp/ .ruby-version .rubocop.yml .tool-versions .yardopts
-        AGENTS.md CLAUDE.md Gemfile Rakefile bin/ doc/ docs/ pkg/ spec/ test/
+        AGENTS.md CLAUDE.md Gemfile Rakefile benchmark/ bin/ doc/ docs/ pkg/ spec/ test/
       ]
 
       (file == gemspec) || file.start_with?(*excluded)
