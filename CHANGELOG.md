@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2026-07-12
+
+### Added
+
+- Expand upstream parity coverage for tokenizer and resolver alignment cases.
+
+### Changed
+
+- Clarify how this gem differs from using RubyLLM directly.
+- Refresh the development dependency lockfile for reproducible release verification.
+
 ## [0.3.0] - 2026-07-11
 
 ### Fixed
