@@ -28,7 +28,7 @@ Reach for LangExtract when you need structured spans provably tied to your sourc
 
 | Concern | RubyLLM directly | LangExtract gem |
 |---|---|---|
-| **Source grounding** | The model says "Acme Corp appears" but not *where*, and may paraphrase | Exact + fuzzy alignment maps every extraction to precise char/token offsets in the source |
+| **Source grounding** | The model says "Acme Corp appears" but not *where*, and may paraphrase | Exact + token-level fuzzy alignment maps grounded extractions to precise char/token offsets in the source |
 | **Long input** | You chunk manually and hope offsets survive | Sentence-aware chunking with `max_char_buffer`, offsets preserved across chunks |
 | **Output parsing** | You parse JSON/YAML, fenced blocks, and malformed output yourself | `format_handler` with strict/lenient modes and fenced-output extraction |
 | **Prompting** | You write and maintain the prompt | Prompt builder with few-shot `ExampleData` and context-window handling |
@@ -43,7 +43,7 @@ In short: RubyLLM gets you an answer from a model; LangExtract gets you structur
 
 - Ruby >= 4.0.5
 - Tested on Ruby 4.0.5
-- Optional live inference adapter: `ruby_llm` >= 1.0 when using `LangExtract::Factory.create_model`
+- Optional live inference adapter: `ruby_llm` >= 1.16.0 when using `LangExtract::Factory.create_model`
 
 ## Installation
 
@@ -89,6 +89,18 @@ model = LangExtract::Factory.create_model(
 ```
 
 If you omit `model`, RubyLLM's configured `default_model` is used.
+
+Set `structured_output: true` to request RubyLLM's schema-constrained extraction envelope. It defaults to `false`, preserving the normal free-form response path:
+
+```ruby
+model = LangExtract::Factory.create_model(
+  LangExtract::ModelConfig.new(
+    model: "gpt-4o-mini",
+    provider: "openai",
+    structured_output: true
+  )
+)
+```
 
 ### Rails
 
@@ -141,6 +153,10 @@ first.char_interval.start_pos
 first.char_interval.end_pos
 first.alignment_status
 ```
+
+### Source alignment
+
+LangExtract first searches for exact source text, then falls back to token-level fuzzy alignment. Fuzzy matching preserves token order and applies per-token similarity, coverage, density, and aggregate-threshold gates, so spacing or punctuation variants can still ground while near-word substitutions, sparse or partial matches, sentence-boundary crossings, and common negation barriers remain ungrounded. Grounded extractions report `exact` or `fuzzy`; by default, when no candidate meets the gates, the extraction reports `ungrounded` without a source interval. Adjust the aggregate gate with `fuzzy_threshold:` when calling `LangExtract.extract` (default `0.78`).
 
 ### Document collections
 

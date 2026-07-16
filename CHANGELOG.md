@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-07-16
+
+### Added
+- `LangExtract::ModelConfig` now exposes opt-in `structured_output: true` (default `false`) for RubyLLM schema-constrained responses via `with_schema`. Non-boolean values are rejected, and schema-constrained Hash/Array responses are normalized back to JSON for the existing format handler. RubyLLM 1.16.0 or newer is required for this provider path.
+- Fuzzy resolver alignment now operates on ordered token subsequences with per-token similarity, aggregate threshold, coverage and density gates, and sentence/negation barriers. Legitimate spacing and punctuation variants can ground, while near-word substitutions and sparse or partial matches remain ungrounded.
+
+### Changed
+- Fuzzy alignment responsibilities are split across token-stream, similarity, index, planner, and aligner components. Indexed binary-search lookups replace repeated forward scans, and the historical 4,000-start truncation is no longer applied while candidate ordering and source offsets remain deterministic.
+- Declared `logger` as a runtime dependency because it is no longer a default gem on Ruby 4.0; clean installations can load LangExtract without requiring applications to add it separately.
+
+### Tests
+- Added resolver grounding regressions for punctuation variants, coverage and semantic barriers; complexity and optional performance guards for indexed alignment; expanded upstream parity fixtures; and provider/factory coverage for schema-constrained output.
+
 ## [0.3.0] - 2026-07-11
 
 ### Fixed
