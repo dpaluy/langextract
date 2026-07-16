@@ -216,10 +216,11 @@ class ResolverTest < LangExtractTest
     )
   end
 
-  def test_fuzzy_candidate_starts_enumeration_is_bounded
+  def test_fuzzy_candidate_starts_are_not_truncated
     cap = LangExtract::Core::FuzzyAligner::MAX_FUZZY_CANDIDATE_STARTS
 
-    # cap+1 valid starts; the cap trims to exactly `cap` alignments.
+    # cap+1 repeated pairs exercise more starts than the historical cap. The
+    # indexed suffix table keeps this linear without dropping later matches.
     pairs = cap + 1
     text = "jonathon smith " * pairs
     resolver = LangExtract::Core::Resolver.new(text: text)
@@ -235,7 +236,9 @@ class ResolverTest < LangExtractTest
 
     alignments = aligner.send(:all_subsequence_alignments, target_tokens)
 
-    assert_equal cap, alignments.size,
-                 "expected exactly #{cap} alignments (#{pairs} valid starts, bounded), got #{alignments.size}"
+    assert_operator alignments.size, :>=, pairs,
+                    "expected at least #{pairs} alignments without truncation, got #{alignments.size}"
+    assert alignments.any? { |alignment| alignment.token_indices == [2 * (pairs - 1), (2 * (pairs - 1)) + 1] },
+           "expected the final repeated pair to remain a candidate"
   end
 end
