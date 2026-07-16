@@ -98,6 +98,11 @@ module LangExtract
     # Finds the best ordered-subsequence alignment of target tokens within
     # source tokens, applying per-token similarity, coverage, and density gates.
     class FuzzyAligner
+      # Maximum number of candidate start positions to attempt alignment from.
+      # Bounds the O(N²) worst case when many source tokens match the first
+      # target token.
+      MAX_FUZZY_CANDIDATE_STARTS = 4_000
+
       # Result of a single ordered-subsequence alignment attempt.
       SubsequenceAlignment = Data.define(:matched, :window_size, :token_indices, :score)
 
@@ -143,8 +148,12 @@ module LangExtract
         end
         return [] if valid_starts.empty?
 
+        # Bound candidate-start enumeration to prevent O(N²) blowup when the
+        # first target token matches many source tokens (issue #9 review).
+        bounded_starts = valid_starts.first(MAX_FUZZY_CANDIDATE_STARTS)
+
         seen = {}
-        valid_starts.each_with_object([]) do |start, alignments|
+        bounded_starts.each_with_object([]) do |start, alignments|
           alignment = align_from_start(target_tokens, start)
           next unless alignment
 
@@ -234,7 +243,6 @@ module LangExtract
       DEFAULT_FUZZY_THRESHOLD = 0.78
       DEFAULT_MIN_COVERAGE = 0.70
       DEFAULT_MIN_DENSITY = 0.34
-      MAX_FUZZY_CANDIDATE_STARTS = 4_000
 
       def initialize(text:, tokenizer: UnicodeTokenizer.new, fuzzy_threshold: DEFAULT_FUZZY_THRESHOLD,
                      allow_overlaps: false, suppress_alignment_errors: true,
@@ -403,14 +411,6 @@ module LangExtract
 
       def overlap_status?(status)
         status == AlignmentStatus::OVERLAP
-      end
-
-      def normalize_for_match(value)
-        value.to_s.unicode_normalize(:nfc).downcase.gsub(/\s+/, " ").strip
-      end
-
-      def similarity(left, right)
-        TokenSimilarity.char_similarity(left, right)
       end
     end
   end

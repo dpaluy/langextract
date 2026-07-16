@@ -216,9 +216,31 @@ class ResolverTest < LangExtractTest
     )
   end
 
-  def test_similarity_matches_sequence_matcher_ratio
-    resolver = LangExtract::Core::Resolver.new(text: "placeholder")
+  def test_fuzzy_candidate_start_enumeration_is_bounded_at_max_constant
+    cap = LangExtract::Core::FuzzyAligner::MAX_FUZZY_CANDIDATE_STARTS
 
-    assert_in_delta 0.75, resolver.send(:similarity, "abcd", "bcde"), 0.0001
+    # Create cap+1 valid start positions for the first target token, each
+    # immediately followed by the second target token so every start yields
+    # a unique alignment. This exercises the cap without an O(N²) forward
+    # scan, keeping the test fast and wall-clock-independent.
+    pairs = cap + 1
+    text = "jonathon smith " * pairs
+    resolver = LangExtract::Core::Resolver.new(text: text)
+
+    aligner = LangExtract::Core::FuzzyAligner.new(
+      source_tokens: resolver.send(:tokens),
+      fuzzy_threshold: 0.78,
+      min_coverage: 0.70,
+      min_density: 0.34,
+      allow_overlaps: false
+    )
+    target_tokens = %w[jonathon smith]
+
+    alignments = aligner.send(:all_subsequence_alignments, target_tokens)
+
+    # With cap+1 valid starts but enumeration capped at MAX_FUZZY_CANDIDATE_STARTS,
+    # exactly `cap` unique alignments should be produced — proving the bound.
+    assert_equal cap, alignments.size,
+                 "expected exactly #{cap} alignments (#{pairs} valid starts, bounded), got #{alignments.size}"
   end
 end
