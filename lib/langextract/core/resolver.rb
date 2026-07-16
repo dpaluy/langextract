@@ -143,13 +143,13 @@ module LangExtract
       def all_subsequence_alignments(target_tokens)
         first_target = target_tokens.first
         valid_starts = (0...source_tokens.length).each_with_object([]) do |idx, starts|
-          source_norm = TokenSimilarity.normalize(source_tokens[idx].text)
-          starts << idx if TokenSimilarity.similar?(first_target, source_norm)
+          starts << idx if TokenSimilarity.similar?(first_target, norm_source[idx])
         end
         return [] if valid_starts.empty?
 
-        # Bound candidate-start enumeration to prevent O(N²) blowup when the
-        # first target token matches many source tokens (issue #9 review).
+        # Defensive bound on candidate-start enumeration. With the indexed
+        # lookup this is no longer load-bearing for performance, but it
+        # guards against degenerate documents where every token is similar.
         bounded_starts = valid_starts.first(MAX_FUZZY_CANDIDATE_STARTS)
 
         seen = {}
@@ -175,10 +175,9 @@ module LangExtract
           match_idx = find_token_match(target_token, source_idx)
           return nil unless match_idx
 
-          source_norm = TokenSimilarity.normalize(source_tokens[match_idx].text)
           matched += 1
           token_indices << match_idx
-          similarities << TokenSimilarity.char_similarity(target_token, source_norm)
+          similarities << TokenSimilarity.char_similarity(target_token, norm_source[match_idx])
           source_idx = match_idx + 1
         end
 
@@ -194,12 +193,45 @@ module LangExtract
         )
       end
 
+      # Find the earliest source token index >= from_index whose normalized
+      # text passes the similarity gate for target_token. Uses a precomputed
+      # index with binary-search lookup instead of a linear forward scan,
+      # reducing per-start cost from O(N) to O(D · log N) where D is the
+      # number of distinct source texts matching this target token.
       def find_token_match(target_token, from_index)
-        from_index.upto(source_tokens.length - 1) do |idx|
-          source_norm = TokenSimilarity.normalize(source_tokens[idx].text)
-          return idx if TokenSimilarity.similar?(target_token, source_norm)
+        best = nil
+        matching_texts(target_token).each do |norm_text|
+          idx = source_index[norm_text].bsearch { |i| i >= from_index }
+          next unless idx
+
+          best = idx if best.nil? || idx < best
         end
-        nil
+        best
+      end
+
+      # Normalized source token texts, cached per instance to avoid
+      # recomputing normalize on every alignment scan.
+      def norm_source
+        @norm_source ||= source_tokens.map { |token| TokenSimilarity.normalize(token.text) }
+      end
+
+      # Hash mapping each distinct normalized source text to its sorted list
+      # of token indices, built once per instance and reused for every
+      # find_token_match binary-search lookup.
+      def source_index
+        @source_index ||= norm_source.each_with_index.with_object({}) do |(norm_text, idx), index|
+          (index[norm_text] ||= []) << idx
+        end
+      end
+
+      # Distinct normalized source texts that pass the similarity gate for
+      # the given target token, cached per target token so the O(D) scan
+      # through distinct source texts happens only once per distinct token.
+      def matching_texts(target_token)
+        @matching_texts_cache ||= {}
+        @matching_texts_cache[target_token] ||= source_index.keys.select do |norm_text|
+          TokenSimilarity.similar?(target_token, norm_text)
+        end
       end
 
       def passes_gates?(alignment, target_count)
