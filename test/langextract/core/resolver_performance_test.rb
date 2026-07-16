@@ -26,4 +26,34 @@ class ResolverPerformanceTest < LangExtractTest
     assert elapsed < 1.0,
            "fuzzy alignment of 4000-start document took #{elapsed.round(3)}s, expected < 1.0s"
   end
+
+  def test_large_sparse_source_keeps_late_candidates_for_multiple_items
+    text = "#{'filler ' * 12_000}Jonathon Smith and Alpa Beta"
+    resolver = LangExtract::Core::Resolver.new(text: text)
+
+    extractions = resolver.resolve(
+      [
+        { "text" => "Jonathan Smith" },
+        { "text" => "Alpha Beta" }
+      ]
+    )
+
+    assert_equal [LangExtract::AlignmentStatus::FUZZY, LangExtract::AlignmentStatus::FUZZY],
+                 extractions.map(&:alignment_status)
+    assert_equal text.index("Jonathon Smith"), extractions.first.char_interval.start_pos
+    assert_equal text.index("Alpa Beta"), extractions.last.char_interval.start_pos
+  end
+
+  def test_oversized_range_skips_fuzzy_planning_without_affecting_exact_alignment
+    cap = LangExtract::Core::Resolver::MAX_FUZZY_RANGE_TOKENS
+    text = "#{'filler ' * (cap + 1)}Jonathon Smith"
+    resolver = LangExtract::Core::Resolver.new(text: text)
+
+    fuzzy = resolver.resolve([{ "text" => "Jonathan Smith" }]).first
+    exact = resolver.resolve([{ "text" => "Jonathon Smith" }]).first
+
+    assert_equal LangExtract::AlignmentStatus::UNGROUNDED, fuzzy.alignment_status
+    assert_equal LangExtract::AlignmentStatus::EXACT, exact.alignment_status
+    assert_equal text.index("Jonathon Smith"), exact.char_interval.start_pos
+  end
 end

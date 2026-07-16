@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "fuzzy_alignment_policy"
 require_relative "token_similarity"
 
 module LangExtract
@@ -9,10 +10,6 @@ module LangExtract
     class FuzzyAlignmentPlanner
       MAX_PATH_ALTERNATIVES_PER_MATCH_COUNT = 2
       SENTENCE_BOUNDARY_PUNCTUATION = /[.!?\u2026\u3002\uff01\uff1f]/u
-      NEGATION_TOKENS = %w[
-        cannot can't can’t deny denies denied denying
-        no not none neither never without
-      ].freeze
 
       SubsequenceAlignment = Data.define(:matched, :window_size, :token_indices, :score)
       AlignmentPath = Data.define(:matched, :score_sum, :first_idx, :last_idx, :previous, :safe_gap)
@@ -235,8 +232,7 @@ module LangExtract
       end
 
       def negation_token?(text)
-        normalized = TokenSimilarity.normalize(text)
-        NEGATION_TOKENS.include?(normalized) || normalized.end_with?("n't", "n’t")
+        FuzzyAlignmentPolicy.negation_token?(text)
       end
     end
   end

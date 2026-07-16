@@ -17,6 +17,13 @@ module LangExtract
         return true if target == source
         return false if target.empty? || source.empty?
 
+        # Short one-edit substitutions are useful when they are anchored by
+        # another exact token in the same extraction.  The alignment policy enforces
+        # that contextual anchor; keeping the broader lexical gate here lets
+        # it consider those candidates without weakening single-token
+        # grounding.
+        return true if short_typo?(target, source)
+
         ratio = [target.length, source.length].min.to_f / [target.length, source.length].max
         return false if ratio < MIN_LENGTH_RATIO
 
@@ -24,7 +31,58 @@ module LangExtract
       end
 
       def normalize(value)
-        value.to_s.unicode_normalize(:nfc).downcase.gsub(/\s+/, " ").strip
+        normalized = value.to_s.unicode_normalize(:nfc).downcase
+        normalized.gsub(/[\u0027\u2019]/u, "").gsub(/\s+/, " ").strip
+      end
+
+      # A one-character edit is intentionally limited to short words.  Long
+      # near-words (for example `human`/`humane`) remain subject to the
+      # stricter ratio and character-similarity gates above.
+      def short_typo?(target_token, source_token)
+        target = normalize(target_token)
+        source = normalize(source_token)
+        return false if target.empty? || source.empty?
+        return false if target == source
+        return false if target.length < 3 || source.length < 3
+        return false if [target.length, source.length].max > 5
+
+        edit_distance_at_most_one?(target, source)
+      end
+
+      def edit_distance_at_most_one?(left, right)
+        return true if left == right
+        return false if (left.length - right.length).abs > 1
+
+        return equal_length_one_mismatch?(left, right) if left.length == right.length
+
+        one_insertion_or_deletion?(left, right)
+      end
+
+      def equal_length_one_mismatch?(left, right)
+        left.each_char.zip(right.each_char).count { |a, b| a != b } <= 1
+      end
+
+      def one_insertion_or_deletion?(left, right)
+        shorter, longer = left.length < right.length ? [left, right] : [right, left]
+        shorter_chars = shorter.each_char.to_a
+        longer_chars = longer.each_char.to_a
+        short_index = 0
+        long_index = 0
+        edits = 0
+
+        # Keep this bounded to one edit.  The early exits make the routine
+        # linear in the short token length and avoid allocating a matrix.
+        while short_index < shorter.length && long_index < longer.length
+          if shorter_chars[short_index] == longer_chars[long_index]
+            short_index += 1
+          else
+            edits += 1
+            return false if edits > 1
+          end
+          long_index += 1
+        end
+
+        edits + (longer.length - long_index) <= 1
       end
 
       def char_similarity(left, right)

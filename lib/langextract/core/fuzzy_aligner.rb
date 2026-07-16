@@ -2,6 +2,7 @@
 
 require_relative "data"
 require_relative "fuzzy_alignment_index"
+require_relative "fuzzy_alignment_policy"
 require_relative "fuzzy_alignment_planner"
 
 module LangExtract
@@ -14,14 +15,16 @@ module LangExtract
       MAX_FUZZY_CANDIDATE_STARTS = 4_000
       SubsequenceAlignment = FuzzyAlignmentPlanner::SubsequenceAlignment
 
-      def initialize(source_tokens:, fuzzy_threshold:, min_coverage:, min_density:, allow_overlaps:)
+      def initialize(source_tokens:, fuzzy_threshold:, min_coverage:, min_density:, allow_overlaps:,
+                     alignment_index: nil)
         @source_tokens = source_tokens
         @fuzzy_threshold = fuzzy_threshold
         @allow_overlaps = allow_overlaps
-        @alignment_index = FuzzyAlignmentIndex.new(source_tokens)
+        @alignment_index = alignment_index || FuzzyAlignmentIndex.new(source_tokens)
+        @policy = FuzzyAlignmentPolicy.new(source_tokens: source_tokens, fuzzy_threshold: fuzzy_threshold)
         @planner = FuzzyAlignmentPlanner.new(
           source_tokens: source_tokens,
-          alignment_index: alignment_index,
+          alignment_index: @alignment_index,
           fuzzy_threshold: fuzzy_threshold,
           min_coverage: min_coverage,
           min_density: min_density
@@ -36,10 +39,13 @@ module LangExtract
         found = alignments.filter_map do |alignment|
           next unless planner.feasible?(alignment, target_tokens.length)
 
+          score = policy.score_for(target_tokens, alignment.token_indices)
+          next unless score
+
           interval = interval_for_alignment(alignment.token_indices, range)
           next unless interval
 
-          match = [interval, alignment.score]
+          match = [interval, score]
           return [match] if perfect_non_overlapping?(match, occupied)
 
           match
@@ -50,7 +56,7 @@ module LangExtract
 
       private
 
-      attr_reader :source_tokens, :fuzzy_threshold, :allow_overlaps, :alignment_index, :planner
+      attr_reader :source_tokens, :fuzzy_threshold, :allow_overlaps, :alignment_index, :planner, :policy
 
       def all_subsequence_alignments(target_tokens)
         start_flags = Array.new(source_tokens.length, false)

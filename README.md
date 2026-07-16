@@ -156,7 +156,9 @@ first.alignment_status
 
 ### Source alignment
 
-LangExtract first searches for exact source text, then falls back to token-level fuzzy alignment. Fuzzy matching preserves token order and applies per-token similarity, coverage, density, and aggregate-threshold gates, so spacing or punctuation variants can still ground while near-word substitutions, sparse or partial matches, sentence-boundary crossings, and common negation barriers remain ungrounded. Grounded extractions report `exact` or `fuzzy`; by default, when no candidate meets the gates, the extraction reports `ungrounded` without a source interval. Adjust the aggregate gate with `fuzzy_threshold:` when calling `LangExtract.extract` (default `0.78`).
+LangExtract first searches for exact source text, then falls back to token-level fuzzy alignment. Fuzzy matching preserves token order and applies per-token similarity, coverage, density, and aggregate-threshold gates. Dash/space, standalone comma, apostrophe, and numeric-grouping variants can ground in either direction while retaining original offsets. One-edit tokens of 3–5 characters are accepted only when another aligned token is exact. Every target negation must match an equivalent source negation, and sentence boundaries or source-side negations cannot be crossed. Same-sentence gaps require at least 0.50 matched-token density.
+
+Grounded extractions report `exact` or `fuzzy`; when no candidate meets the gates, the extraction reports `ungrounded` without a source interval. Fuzzy planning is limited to 20,000 source tokens per search range to prevent unbounded CPU work on large documents. Exact matching remains available at any size, and the normal extraction pipeline first searches its preferred chunk range (2,000 characters by default). Oversized fuzzy ranges are skipped as a whole rather than truncating later candidates. Adjust the aggregate gate with `fuzzy_threshold:` when calling `LangExtract.extract` (default `0.78`).
 
 ### Document collections
 

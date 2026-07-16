@@ -123,6 +123,31 @@ class FuzzyAlignerComplexityTest < LangExtractTest
     assert_equal 1, idx
   end
 
+  def test_dense_similarity_matrix_preserves_highest_scoring_global_path
+    target_tokens = %w[
+      abcdefghijklmebd abcdefghijklmddc
+      abcdefghijklmbde abcdefghijklmcde
+    ]
+    source_text = %w[
+      abcdefghijklmbfe abcdefghijklmaef abcdefghijklmfbf abcdefghijklmbeb
+      abcdefghijklmefa abcdefghijklmbaa abcdefghijklmeae abcdefghijklmcdb
+    ].join(" ")
+    source_tokens = LangExtract::Core::Resolver.new(text: source_text).send(:tokens)
+    index = LangExtract::Core::FuzzyAlignmentIndex.new(source_tokens)
+    planner = LangExtract::Core::FuzzyAlignmentPlanner.new(
+      source_tokens: source_tokens,
+      alignment_index: index,
+      fuzzy_threshold: 0.78,
+      min_coverage: 0.70,
+      min_density: 0.50
+    )
+
+    alignment = planner.alignment_for(target_tokens, 0)
+
+    assert_equal [0, 1, 3, 7], alignment.token_indices
+    assert_in_delta 0.890625, alignment.score
+  end
+
   private
 
   # Count TokenSimilarity.similar? invocations by wrapping the method.

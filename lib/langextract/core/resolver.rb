@@ -12,7 +12,9 @@ module LangExtract
     class Resolver
       DEFAULT_FUZZY_THRESHOLD = 0.78
       DEFAULT_MIN_COVERAGE = 0.70
-      DEFAULT_MIN_DENSITY = 0.34
+      DEFAULT_MIN_DENSITY = 0.50
+      MAX_FUZZY_RANGE_TOKENS = 20_000
+      FuzzySourceContext = Data.define(:tokens, :index)
 
       def initialize(text:, tokenizer: UnicodeTokenizer.new, fuzzy_threshold: DEFAULT_FUZZY_THRESHOLD,
                      allow_overlaps: false, suppress_alignment_errors: true,
@@ -26,6 +28,7 @@ module LangExtract
         @min_density = min_density
         @tokens = tokenizer.tokenize(text)
         @fuzzy_token_stream = FuzzyTokenStream.new(tokens)
+        @fuzzy_contexts = {}
       end
 
       def resolve(items, document_id: nil, preferred_interval: nil)
@@ -39,7 +42,7 @@ module LangExtract
       private
 
       attr_reader :text, :tokens, :tokenizer, :fuzzy_threshold, :allow_overlaps, :suppress_alignment_errors,
-                  :min_coverage, :min_density, :fuzzy_token_stream
+                  :min_coverage, :min_density, :fuzzy_token_stream, :fuzzy_contexts
 
       def resolve_one(item, index, document_id, preferred_interval, occupied)
         hash = HashCoercion.stringify_keys(item)
@@ -130,20 +133,45 @@ module LangExtract
       end
 
       def fuzzy_candidates(target_tokens, range, occupied)
-        source_tokens = fuzzy_token_stream.tokens_in(range)
-        return [] if source_tokens.empty?
+        context = fuzzy_context(range)
+        return [] unless context
 
         FuzzyAligner.new(
-          source_tokens: source_tokens,
+          source_tokens: context.tokens,
           fuzzy_threshold: fuzzy_threshold,
           min_coverage: min_coverage,
           min_density: min_density,
-          allow_overlaps: allow_overlaps
+          allow_overlaps: allow_overlaps,
+          alignment_index: context.index
         ).candidates(target_tokens, range, occupied)
       end
 
+      def fuzzy_context(range)
+        key = [range.begin, range.end]
+        return fuzzy_contexts[key] if fuzzy_contexts.key?(key)
+
+        # Skip the entire oversized range instead of truncating candidate
+        # starts; preferred chunk ranges and exact alignment remain available.
+        return fuzzy_contexts[key] = nil if canonical_token_count(range) > MAX_FUZZY_RANGE_TOKENS
+
+        source_tokens = fuzzy_token_stream.tokens_in(range)
+        return fuzzy_contexts[key] = nil if source_tokens.empty? || source_tokens.length > MAX_FUZZY_RANGE_TOKENS
+
+        fuzzy_contexts[key] = FuzzySourceContext.new(
+          tokens: source_tokens,
+          index: FuzzyAlignmentIndex.new(source_tokens)
+        )
+      end
+
+      def canonical_token_count(range)
+        tokens.count do |token|
+          token.char_interval.start_pos >= range.begin && token.char_interval.end_pos <= range.end
+        end
+      end
+
       def tokenize_extraction(extraction_text)
-        tokenizer.tokenize(extraction_text.unicode_normalize(:nfc)).filter_map do |token|
+        target_tokens = tokenizer.tokenize(extraction_text.unicode_normalize(:nfc))
+        FuzzyTokenStream.new(target_tokens).tokens_in(0...extraction_text.length).filter_map do |token|
           normalized = TokenSimilarity.normalize(token.text)
           normalized unless normalized.empty?
         end
