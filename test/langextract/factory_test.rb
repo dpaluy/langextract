@@ -50,4 +50,38 @@ class FactoryTest < LangExtractTest
 
     assert_equal 1, object_ids.uniq.length
   end
+
+  def test_model_config_defaults_to_unconstrained_output
+    config = LangExtract::ModelConfig.new(model: "fixture")
+
+    assert_equal false, config.structured_output
+  end
+
+  def test_model_config_accepts_structured_output_true
+    config = LangExtract::ModelConfig.new(model: "fixture", structured_output: true)
+
+    assert_equal true, config.structured_output
+  end
+
+  def test_model_config_accepts_structured_output_false_explicitly
+    config = LangExtract::ModelConfig.new(model: "fixture", structured_output: false)
+
+    assert_equal false, config.structured_output
+  end
+
+  def test_model_config_rejects_non_boolean_structured_output
+    ["true", 1, nil, :yes].each do |value|
+      error = assert_raises(LangExtract::InvalidModelConfigError) do
+        LangExtract::ModelConfig.new(model: "fixture", structured_output: value)
+      end
+
+      assert_includes error.message, "structured_output"
+    end
+  end
+
+  def test_model_config_serialization_includes_structured_output
+    config = LangExtract::ModelConfig.new(model: "fixture", structured_output: true)
+
+    assert_equal true, config.to_h["structured_output"]
+  end
 end

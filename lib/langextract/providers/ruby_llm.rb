@@ -2,15 +2,37 @@
 
 require_relative "base"
 require_relative "../core/types"
+require "json"
 require "timeout"
 
 module LangExtract
   module Providers
     class RubyLLMProvider < Base
+      INTERNAL_EXTRACTION_SCHEMA = {
+        "type" => "object",
+        "properties" => {
+          "extractions" => {
+            "type" => "array",
+            "items" => {
+              "type" => "object",
+              "properties" => {
+                "text" => { "type" => "string" },
+                "extraction_class" => { "type" => "string" },
+                "description" => { "type" => "string" },
+                "attributes" => { "type" => "object" },
+                "group_id" => { "type" => "string" }
+              },
+              "required" => ["text"]
+            }
+          }
+        },
+        "required" => ["extractions"]
+      }.freeze
+
       def infer(prompt:)
         require "ruby_llm"
 
-        response = RubyLLM.chat(**chat_options).ask(prompt)
+        response = build_chat.ask(prompt)
         InferenceResult.new(text: extract_text(response), raw: response)
       rescue LoadError => e
         raise Core::ProviderConfigError, "ruby_llm is required for live provider inference: #{e.message}"
@@ -22,6 +44,12 @@ module LangExtract
       end
 
       private
+
+      def build_chat
+        chat = RubyLLM.chat(**chat_options)
+        chat.with_schema(INTERNAL_EXTRACTION_SCHEMA) if config.structured_output
+        chat
+      end
 
       def provider_error_class(error)
         return Core::ProviderTimeoutError if timeout_error?(error)
@@ -57,7 +85,9 @@ module LangExtract
       end
 
       def extract_text(response)
-        return response.content.to_s if response.respond_to?(:content)
+        content = response.content
+        return JSON.generate(content) if content.is_a?(Hash) || content.is_a?(Array)
+        return content.to_s if response.respond_to?(:content)
         return response.text.to_s if response.respond_to?(:text)
 
         response.to_s
