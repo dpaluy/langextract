@@ -144,23 +144,60 @@ class ResolverTest < LangExtractTest
     assert_equal [LangExtract::AlignmentStatus::FUZZY] * 2, extractions.map(&:alignment_status)
   end
 
-  def test_fuzzy_early_exit_returns_earliest_normalized_equal_match
+  def test_fuzzy_returns_earliest_normalized_equal_match
     text = "Alpha   Beta then Alpha   Beta"
     resolver = LangExtract::Core::Resolver.new(text: text)
 
-    target = "alpha beta"
-    candidates = resolver.send(
-      :fuzzy_candidates_in_range,
-      "Alpha Beta",
-      target,
-      target.each_char.tally,
-      0...text.length,
-      []
-    )
+    extraction = resolver.resolve([{ "text" => "Alpha Beta" }]).first
 
-    assert_equal 1, candidates.length
-    assert_equal LangExtract::CharInterval.new(start_pos: 0, end_pos: 12), candidates.first.first
-    assert_equal 1.0, candidates.first.last
+    assert_equal LangExtract::AlignmentStatus::FUZZY, extraction.alignment_status
+    assert_equal LangExtract::CharInterval.new(start_pos: 0, end_pos: 12), extraction.char_interval
+  end
+
+  # --- Issue #9: token-level ordered-subsequence fuzzy alignment ---
+
+  def test_fuzzy_rejects_humane_as_near_word_substitution_for_human
+    resolver = LangExtract::Core::Resolver.new(text: "The human race evolved.")
+    extraction = resolver.resolve([{ "text" => "humane" }]).first
+
+    assert_equal LangExtract::AlignmentStatus::UNGROUNDED, extraction.alignment_status
+  end
+
+  def test_fuzzy_rejects_cart_as_near_word_substitution_for_chart
+    resolver = LangExtract::Core::Resolver.new(text: "The chart shows data.")
+    extraction = resolver.resolve([{ "text" => "cart" }]).first
+
+    assert_equal LangExtract::AlignmentStatus::UNGROUNDED, extraction.alignment_status
+  end
+
+  def test_fuzzy_rejects_chart_as_near_word_substitution_for_cart
+    resolver = LangExtract::Core::Resolver.new(text: "The shopping cart is full.")
+    extraction = resolver.resolve([{ "text" => "chart" }]).first
+
+    assert_equal LangExtract::AlignmentStatus::UNGROUNDED, extraction.alignment_status
+  end
+
+  def test_fuzzy_aligns_dense_ordered_gapped_extraction
+    resolver = LangExtract::Core::Resolver.new(text: "a x b y c")
+    extraction = resolver.resolve([{ "text" => "a b c" }]).first
+
+    assert_equal LangExtract::AlignmentStatus::FUZZY, extraction.alignment_status
+    assert_equal LangExtract::CharInterval.new(start_pos: 0, end_pos: 9), extraction.char_interval
+  end
+
+  def test_fuzzy_rejects_sparse_ordered_subsequence_below_density_gate
+    text = "a #{Array.new(10, 'gap').join(' ')} b"
+    resolver = LangExtract::Core::Resolver.new(text: text)
+    extraction = resolver.resolve([{ "text" => "a b" }]).first
+
+    assert_equal LangExtract::AlignmentStatus::UNGROUNDED, extraction.alignment_status
+  end
+
+  def test_fuzzy_rejects_partial_coverage_below_gate
+    resolver = LangExtract::Core::Resolver.new(text: "Jonathon Smith signed the contract.")
+    extraction = resolver.resolve([{ "text" => "Jonathan Smith absent" }]).first
+
+    assert_equal LangExtract::AlignmentStatus::UNGROUNDED, extraction.alignment_status
   end
 
   def test_fuzzy_early_exit_skips_occupied_perfect_match
@@ -179,9 +216,29 @@ class ResolverTest < LangExtractTest
     )
   end
 
-  def test_similarity_matches_sequence_matcher_ratio
-    resolver = LangExtract::Core::Resolver.new(text: "placeholder")
+  def test_fuzzy_candidate_starts_are_not_truncated
+    cap = LangExtract::Core::FuzzyAligner::MAX_FUZZY_CANDIDATE_STARTS
 
-    assert_in_delta 0.75, resolver.send(:similarity, "abcd", "bcde"), 0.0001
+    # cap+1 repeated pairs exercise more starts than the historical cap. The
+    # indexed suffix table keeps this linear without dropping later matches.
+    pairs = cap + 1
+    text = "jonathon smith " * pairs
+    resolver = LangExtract::Core::Resolver.new(text: text)
+
+    aligner = LangExtract::Core::FuzzyAligner.new(
+      source_tokens: resolver.send(:tokens),
+      fuzzy_threshold: 0.78,
+      min_coverage: 0.70,
+      min_density: 0.34,
+      allow_overlaps: false
+    )
+    target_tokens = %w[jonathon smith]
+
+    alignments = aligner.send(:all_subsequence_alignments, target_tokens)
+
+    assert_operator alignments.size, :>=, pairs,
+                    "expected at least #{pairs} alignments without truncation, got #{alignments.size}"
+    assert alignments.any? { |alignment| alignment.token_indices == [2 * (pairs - 1), (2 * (pairs - 1)) + 1] },
+           "expected the final repeated pair to remain a candidate"
   end
 end

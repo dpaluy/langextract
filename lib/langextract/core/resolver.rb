@@ -1,37 +1,34 @@
 # frozen_string_literal: true
 
 require_relative "data"
+require_relative "fuzzy_aligner"
+require_relative "fuzzy_token_stream"
+require_relative "token_similarity"
 require_relative "tokenizer"
 
 module LangExtract
   module Core
-    module SimilarityUpperBound
-      module_function
-
-      def passes?(target, candidate, target_counts, threshold)
-        denominator = target.length + candidate.length
-        length_matches = [target.length, candidate.length].min
-        return false if (2.0 * length_matches / denominator) < threshold
-
-        candidate_counts = candidate.each_char.tally
-        character_matches = target_counts.sum { |character, count| [count, candidate_counts[character].to_i].min }
-        (2.0 * character_matches / denominator) >= threshold
-      end
-    end
-
+    # Resolves model extraction text to exact or fuzzy source intervals.
     class Resolver
       DEFAULT_FUZZY_THRESHOLD = 0.78
-      MAX_FUZZY_CANDIDATE_STARTS = 4_000
-      Match = Data.define(:left_start, :right_start, :span_length)
+      DEFAULT_MIN_COVERAGE = 0.70
+      DEFAULT_MIN_DENSITY = 0.50
+      MAX_FUZZY_RANGE_TOKENS = 20_000
+      FuzzySourceContext = Data.define(:tokens, :index)
 
       def initialize(text:, tokenizer: UnicodeTokenizer.new, fuzzy_threshold: DEFAULT_FUZZY_THRESHOLD,
-                     allow_overlaps: false, suppress_alignment_errors: true)
+                     allow_overlaps: false, suppress_alignment_errors: true,
+                     min_coverage: DEFAULT_MIN_COVERAGE, min_density: DEFAULT_MIN_DENSITY)
         @text = text
         @tokenizer = tokenizer
         @fuzzy_threshold = fuzzy_threshold
         @allow_overlaps = allow_overlaps
         @suppress_alignment_errors = suppress_alignment_errors
+        @min_coverage = min_coverage
+        @min_density = min_density
         @tokens = tokenizer.tokenize(text)
+        @fuzzy_token_stream = FuzzyTokenStream.new(tokens)
+        @fuzzy_contexts = {}
       end
 
       def resolve(items, document_id: nil, preferred_interval: nil)
@@ -44,7 +41,8 @@ module LangExtract
 
       private
 
-      attr_reader :text, :tokens, :fuzzy_threshold, :allow_overlaps, :suppress_alignment_errors
+      attr_reader :text, :tokens, :tokenizer, :fuzzy_threshold, :allow_overlaps, :suppress_alignment_errors,
+                  :min_coverage, :min_density, :fuzzy_token_stream, :fuzzy_contexts
 
       def resolve_one(item, index, document_id, preferred_interval, occupied)
         hash = HashCoercion.stringify_keys(item)
@@ -88,39 +86,44 @@ module LangExtract
       end
 
       def exact_intervals_in_range(extraction_text, range)
+        intervals = case_sensitive_intervals(extraction_text, range)
+        return intervals unless intervals.empty?
+
+        case_insensitive_intervals(extraction_text, range)
+      end
+
+      def case_sensitive_intervals(extraction_text, range)
         intervals = []
         cursor = range.begin
-        range_end = range.end
-        while cursor < range_end
+        while cursor < range.end
           match_pos = text.index(extraction_text, cursor)
-          break unless match_pos && match_pos < range_end
+          break unless match_pos && match_pos < range.end
 
           end_pos = match_pos + extraction_text.length
-          intervals << CharInterval.new(start_pos: match_pos, end_pos: end_pos) if end_pos <= range_end
+          intervals << CharInterval.new(start_pos: match_pos, end_pos: end_pos) if end_pos <= range.end
           cursor = match_pos + 1
         end
-        if intervals.empty?
-          pattern = Regexp.new(Regexp.escape(extraction_text), Regexp::IGNORECASE)
-          cursor = range.begin
-          while (match = pattern.match(text, cursor)) && match.begin(0) < range_end
-            intervals << CharInterval.new(start_pos: match.begin(0), end_pos: match.end(0)) if match.end(0) <= range_end
-            cursor = match.begin(0) + 1
-          end
-        end
+        intervals
+      end
 
+      def case_insensitive_intervals(extraction_text, range)
+        intervals = []
+        pattern = Regexp.new(Regexp.escape(extraction_text), Regexp::IGNORECASE)
+        cursor = range.begin
+        while (match = pattern.match(text, cursor)) && match.begin(0) < range.end
+          intervals << CharInterval.new(start_pos: match.begin(0), end_pos: match.end(0)) if match.end(0) <= range.end
+          cursor = match.begin(0) + 1
+        end
         intervals
       end
 
       def find_fuzzy(extraction_text, preferred_interval, occupied)
-        target = normalize_for_match(extraction_text)
-        return nil if target.empty?
+        target_tokens = tokenize_extraction(extraction_text)
+        return nil if target_tokens.empty?
 
-        target_counts = target.each_char.tally
         overlap_fallback = nil
-
         candidate_search_ranges(preferred_interval).each do |range|
-          candidates = fuzzy_candidates_in_range(extraction_text, target, target_counts, range, occupied)
-          candidates = ranked_unique_candidates(candidates)
+          candidates = fuzzy_candidates(target_tokens, range, occupied)
           overlap_fallback ||= candidates.first&.first
           non_overlap = candidates.find { |interval, _score| allow_overlaps || !overlaps_any?(interval, occupied) }
           return [non_overlap.first, AlignmentStatus::FUZZY] if non_overlap
@@ -129,54 +132,49 @@ module LangExtract
         overlap_fallback && [overlap_fallback, AlignmentStatus::OVERLAP]
       end
 
-      def fuzzy_candidates_in_range(extraction_text, normalized_target, target_counts, range, occupied)
-        target_length = extraction_text.length
-        min_length = [1, (target_length * 0.65).floor].max
-        max_length = [(target_length * 1.35).ceil, min_length].max
-        candidates = []
+      def fuzzy_candidates(target_tokens, range, occupied)
+        context = fuzzy_context(range)
+        return [] unless context
 
-        candidate_start_positions(range).each do |start_pos|
-          (min_length..max_length).each do |length|
-            end_pos = start_pos + length
-            next if end_pos > range.end
-
-            candidate = text[start_pos...end_pos]
-            normalized_candidate = normalize_for_match(candidate)
-            next unless SimilarityUpperBound.passes?(normalized_target, normalized_candidate, target_counts,
-                                                     fuzzy_threshold)
-
-            score = similarity(normalized_target, normalized_candidate)
-            next if score < fuzzy_threshold
-
-            match = [CharInterval.new(start_pos: start_pos, end_pos: end_pos), score]
-            interval = match.first
-            return [match] if score >= 1.0 && (allow_overlaps || !overlaps_any?(interval, occupied))
-
-            candidates << match
-          end
-        end
-
-        candidates
+        FuzzyAligner.new(
+          source_tokens: context.tokens,
+          fuzzy_threshold: fuzzy_threshold,
+          min_coverage: min_coverage,
+          min_density: min_density,
+          allow_overlaps: allow_overlaps,
+          alignment_index: context.index
+        ).candidates(target_tokens, range, occupied)
       end
 
-      def candidate_start_positions(range)
-        starts = tokens.filter_map do |token|
-          start_pos = token.char_interval.start_pos
-          start_pos if start_pos >= range.begin && start_pos < range.end
-        end.uniq
+      def fuzzy_context(range)
+        key = [range.begin, range.end]
+        return fuzzy_contexts[key] if fuzzy_contexts.key?(key)
 
-        return starts.first(MAX_FUZZY_CANDIDATE_STARTS) unless starts.empty?
+        # Skip the entire oversized range instead of truncating candidate
+        # starts; preferred chunk ranges and exact alignment remain available.
+        return fuzzy_contexts[key] = nil if canonical_token_count(range) > MAX_FUZZY_RANGE_TOKENS
 
-        (range.begin...range.end).reject { |position| text[position].match?(/\s/) }.first(MAX_FUZZY_CANDIDATE_STARTS)
+        source_tokens = fuzzy_token_stream.tokens_in(range)
+        return fuzzy_contexts[key] = nil if source_tokens.empty? || source_tokens.length > MAX_FUZZY_RANGE_TOKENS
+
+        fuzzy_contexts[key] = FuzzySourceContext.new(
+          tokens: source_tokens,
+          index: FuzzyAlignmentIndex.new(source_tokens)
+        )
       end
 
-      def ranked_unique_candidates(candidates)
-        best_by_interval = candidates.each_with_object({}) do |(interval, score), result|
-          key = [interval.start_pos, interval.end_pos]
-          result[key] = [interval, score] if result[key].nil? || score > result[key].last
+      def canonical_token_count(range)
+        tokens.count do |token|
+          token.char_interval.start_pos >= range.begin && token.char_interval.end_pos <= range.end
         end
+      end
 
-        best_by_interval.values.sort_by { |interval, score| [-score, interval.start_pos, interval.end_pos] }
+      def tokenize_extraction(extraction_text)
+        target_tokens = tokenizer.tokenize(extraction_text.unicode_normalize(:nfc))
+        FuzzyTokenStream.new(target_tokens).tokens_in(0...extraction_text.length).filter_map do |token|
+          normalized = TokenSimilarity.normalize(token.text)
+          normalized unless normalized.empty?
+        end
       end
 
       def candidate_search_ranges(preferred_interval)
@@ -214,64 +212,6 @@ module LangExtract
 
       def overlap_status?(status)
         status == AlignmentStatus::OVERLAP
-      end
-
-      def normalize_for_match(value)
-        value.to_s.unicode_normalize(:nfc).downcase.gsub(/\s+/, " ").strip
-      end
-
-      def similarity(left, right)
-        return 1.0 if left == right
-        return 0.0 if left.empty? || right.empty?
-
-        matches = sequence_match_count(left.each_char.to_a, right.each_char.to_a)
-        (2.0 * matches) / (left.length + right.length)
-      end
-
-      def sequence_match_count(left_chars, right_chars, left_range = 0...left_chars.length,
-                               right_range = 0...right_chars.length)
-        match = longest_common_substring(left_chars, right_chars, left_range, right_range)
-        return 0 unless match.span_length.positive?
-
-        left_count = sequence_match_count(
-          left_chars,
-          right_chars,
-          left_range.begin...match.left_start,
-          right_range.begin...match.right_start
-        )
-        right_count = sequence_match_count(
-          left_chars,
-          right_chars,
-          (match.left_start + match.span_length)...left_range.end,
-          (match.right_start + match.span_length)...right_range.end
-        )
-
-        match.span_length + left_count + right_count
-      end
-
-      def longest_common_substring(left_chars, right_chars, left_range, right_range)
-        best = Match.new(left_start: left_range.begin, right_start: right_range.begin, span_length: 0)
-        previous_lengths = Array.new(right_range.size + 1, 0)
-
-        left_range.each do |left_index|
-          current_lengths = Array.new(right_range.size + 1, 0)
-          right_range.each_with_index do |right_index, offset|
-            next unless left_chars[left_index] == right_chars[right_index]
-
-            length = previous_lengths[offset] + 1
-            current_lengths[offset + 1] = length
-            next unless length > best.span_length
-
-            best = Match.new(
-              left_start: left_index - length + 1,
-              right_start: right_index - length + 1,
-              span_length: length
-            )
-          end
-          previous_lengths = current_lengths
-        end
-
-        best
       end
     end
   end

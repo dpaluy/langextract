@@ -14,6 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/dpaluy/langextract"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 4.0.5"
+  spec.add_dependency "logger", ">= 1.6.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["documentation_uri"] = "https://rubydoc.info/gems/langextract"
